@@ -1,0 +1,9 @@
+main: com.belmu.quake.Quake
+name: BelQuake
+version: 1.0
+api-version: 1.8
+description: A Quakecraft plugin made by @Belmu_
+commands:
+  quake:
+    description: Quakecraft main command. Type '/quake help' for more information.
+    aliases: [q, qk]
