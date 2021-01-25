@@ -139,6 +139,11 @@ public class CancelledEvents implements Listener {
     }
 
     @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        if(!e.getPlayer().isOp() || e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
+    }
+
+    @EventHandler
     public void onLeavesDecay(LeavesDecayEvent e) {
         e.setCancelled(true);
     }
