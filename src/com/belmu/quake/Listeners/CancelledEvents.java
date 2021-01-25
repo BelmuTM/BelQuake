@@ -120,27 +120,27 @@ public class CancelledEvents implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
-        if(!e.getPlayer().isOp() || e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
+        if(isValid(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
-        if(!e.getPlayer().isOp() || e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
+        if(isValid(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onDropItem(PlayerDropItemEvent e) {
-        if(!e.getPlayer().isOp() || e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
+        if(isValid(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onPickupItem(PlayerPickupItemEvent e) {
-        if(!e.getPlayer().isOp() || e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
+        if(isValid(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if(!e.getPlayer().isOp() || e.getPlayer().getGameMode() != GameMode.CREATIVE) e.setCancelled(true);
+        if(isValid(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
@@ -164,7 +164,7 @@ public class CancelledEvents implements Listener {
     public void onMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
 
-        if(player.getLocation().getY() <= 4.5)
+        if(player.getLocation().getY() <= 4)
             plugin.gameMap.teleportPlayer(player);
     }
 
@@ -208,6 +208,10 @@ public class CancelledEvents implements Listener {
                 }
             }
         }
+    }
+
+    public boolean isValid(Player player) {
+        return !player.isOp() || player.getGameMode() != GameMode.CREATIVE;
     }
 
 }
