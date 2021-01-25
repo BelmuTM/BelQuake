@@ -1,7 +1,5 @@
 package com.belmu.quake.Core.Stats;
 
-import com.belmu.quake.Core.Railgun.KillMessages;
-
 public enum StreaksMessages {
 
     FIVE(5, "§7%player% §bis on a §eKilling Spree"),

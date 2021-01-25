@@ -1,8 +1,6 @@
 package com.belmu.quake.Core.Railgun.Firing;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.material.PressurePlate;
 
 /**
  * @author Belmu (https://github.com/BelmuTM/)
