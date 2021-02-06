@@ -1,4 +1,4 @@
-main: com.belmu.quake.Quake
+main: com.belmu.quakecraft.Quake
 name: BelQuake
 version: 1.0
 api-version: 1.8
