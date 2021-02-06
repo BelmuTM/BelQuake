@@ -158,7 +158,10 @@ public class CancelledEvents implements Listener {
     }
 
     @EventHandler
-    public void onLeavesDecay(LeavesDecayEvent e) {
+    public void onLeavesDecay(LeavesDecayEvent e) { e.setCancelled(true); }
+
+    @EventHandler
+    public void onGrowth(BlockGrowEvent e) {
         e.setCancelled(true);
     }
 
