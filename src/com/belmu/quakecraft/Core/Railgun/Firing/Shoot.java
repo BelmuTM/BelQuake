@@ -118,7 +118,6 @@ public class Shoot {
 
                         if(state.running) state.addKills(player.getUniqueId(), 1);
                     }
-                    checkFirstBlood(player);
 
                     if(headshot(destination, entity)) {
                         headshot = true;
@@ -196,7 +195,7 @@ public class Shoot {
         if(!PassableBlocks.contains(material)) {
 
             if(PassableBlocks.isSlab(material)) {
-                Step slab = (Step) block.getState().getData();
+                Step slab = (Step) block.getState();
 
                 if(!slab.isInverted()) { // Bottom
                     return location.getY() - block.getLocation().getY() > 0.5;
@@ -251,23 +250,6 @@ public class Shoot {
                 if(kills >= (GameOptions.toWin - 1)) state.winner = player;
             }
         }
-    }
-
-    public void checkFirstBlood(Player player) {
-        UUID check = null;
-        Set<Integer> set = new HashSet<>();
-
-        for(int i = 0; i < state.gameKills.size(); i++) {
-
-            check = (UUID) state.gameKills.keySet().toArray()[i];
-            set.add((int) state.gameKills.values().toArray()[i]);
-        }
-
-        if(set.size() == 1 && check == player.getUniqueId()) {
-            for(Player online : Bukkit.getOnlinePlayers())
-                ActionBar.sendActionBar(online, "§c§lFIRST BLOOD §7(" + player.getName() + ")");
-        }
-
     }
 
 }
