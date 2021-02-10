@@ -7,6 +7,7 @@ import com.belmu.quakecraft.Core.Packets.Scoreboard.GameScoreboard;
 import com.belmu.quakecraft.Core.Packets.TabList.TabList;
 import com.belmu.quakecraft.Quake;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -48,6 +49,7 @@ public class PlayerJoin implements Listener {
 
         player.getInventory().clear();
         if(player.hasPotionEffect(PotionEffectType.SPEED)) player.removePotionEffect(PotionEffectType.SPEED);
+        if(player.getGameMode() != GameMode.ADVENTURE && !player.isOp()) player.setGameMode(GameMode.ADVENTURE);
 
         /**
          * Constantly sending packets to the player who joined.
