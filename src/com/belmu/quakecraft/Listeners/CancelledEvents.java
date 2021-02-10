@@ -135,25 +135,16 @@ public class CancelledEvents implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
         if(isValid(e.getPlayer())) e.setCancelled(true);
-
-        if(e.getBlock().getType() == Material.DOUBLE_PLANT) {
-
-            Block tallPlantBottom = e.getBlock();
-            Block tallPlantTop = e.getBlock().getRelative(BlockFace.UP);
-
-            setFlower(tallPlantBottom, true);
-            setFlower(tallPlantTop, false);
-        }
-    }
-
-    public void setFlower(Block block, boolean lower) {
-        block.setType(Material.DOUBLE_PLANT);
-        if(lower) block.setData((byte) 4); else block.setData((byte) 10);
     }
 
     @EventHandler
     public void onBlockDamage(BlockDamageEvent e ) {
         if(isValid(e.getPlayer())) e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onBlockPhysics(BlockPhysicsEvent e) {
+        e.setCancelled(true);
     }
 
     @EventHandler
@@ -212,11 +203,6 @@ public class CancelledEvents implements Listener {
         if(!player.isSneaking() && game.running) {
             player.sendMessage(Quake.prefix + "§cSneaking is disabled in this mode. Your nickname is still visible.");
         }
-    }
-
-    @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent e) {
-        e.setCancelled(true);
     }
 
     public boolean isValid(Player player) {
