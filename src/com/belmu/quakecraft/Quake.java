@@ -53,6 +53,7 @@ public class Quake extends JavaPlugin implements Listener {
 
         setProperties();
         Bukkit.getWorld("world").setGameRuleValue("doDaylightCycle", "false");
+        Bukkit.getWorld("world").setGameRuleValue("randomTickSpeed", "0");
 
         mapTime = mapManager.chooseGameMap();
 
