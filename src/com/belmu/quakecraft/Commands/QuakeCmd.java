@@ -230,7 +230,7 @@ public class QuakeCmd implements CommandExecutor {
                             player.sendMessage(wrongUsage);
                     } else if(args[0].equalsIgnoreCase("leaderboard") || args[0].equalsIgnoreCase("lb")) {
 
-                        LinkedHashMap<UUID, Integer> sortedKills = plugin.statsConfig.sortedKills();
+                        LinkedHashMap<UUID, Integer> sortedKills = plugin.gameState.sortedGameKills(true);
                         StringBuilder leaderboard = new StringBuilder();
 
                         if(args.length == 1) {
@@ -287,6 +287,7 @@ public class QuakeCmd implements CommandExecutor {
             + cmd + "§fspawnpoint §7[name] §fadd" + "\n"
             + cmd + "§fspawnpoint §7[name] §fremove §7[id]" + "\n"
             + cmd + "§fspawnpoint §7[name] §fteleport §7[id]" + "\n"
+            + cmd + "§fspawnpoint §7[name] §fclear" + "\n"
             + cmd + "§fspawnpoint §7[name] §flist" + "\n \n"
             + "§a[-] §eLeaderboard:" + "\n \n"
             + cmd + "§fleaderboard|lb" + "\n \n"

@@ -66,7 +66,7 @@ public class CancelledEvents implements Listener {
         e.setCancelled(true);
     }
 
-    @EventHandler(priority= EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onThunderChange(ThunderChangeEvent event) {
         boolean storm = event.toThunderState();
 
