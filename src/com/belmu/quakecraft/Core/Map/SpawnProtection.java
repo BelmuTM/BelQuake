@@ -37,7 +37,7 @@ public class SpawnProtection {
 
             () -> {
                 if(!invulnerable.contains(uuid)) invulnerable.add(uuid);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) time, 2, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) time * 20, 2, true, false));
             },
             () -> {
                 invulnerable.remove(uuid);

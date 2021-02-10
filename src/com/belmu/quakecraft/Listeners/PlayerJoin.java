@@ -81,14 +81,14 @@ public class PlayerJoin implements Listener {
             }
             checkGame(map, game);
         }
-        addToTeams(player, "quake");
+        addToTeams(player, player.getName());
     }
 
     public void addToTeams(Player player, String teamName) {
         GameScoreboard scoreboard = new GameScoreboard(plugin);
+        BPlayerBoard playerBoard = scoreboard.scoreBoards.get(player);
 
         for(Player scoreboardPlayers : scoreboard.scoreBoards.keySet()) {
-            BPlayerBoard playerBoard = scoreboard.scoreBoards.get(player);
 
             if(playerBoard.getScoreboard() != null && playerBoard.getScoreboard().getTeam(teamName) != null &&
                     !playerBoard.getScoreboard().getTeam(teamName).getEntries().contains(scoreboardPlayers.getName()))

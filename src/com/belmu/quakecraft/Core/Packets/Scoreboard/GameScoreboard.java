@@ -46,7 +46,7 @@ public class GameScoreboard {
         } else sb = nb.createBoard(player, newScoreboard, "scoreboard_0");
 
         sb.setName(name);
-        createTeam(player, sb.getScoreboard(), "quake");
+        createTeam(sb.getScoreboard(), player.getName());
 
         scoreBoards.put(player, sb);
     }
@@ -112,7 +112,7 @@ public class GameScoreboard {
                             String a = pName + "§f: §a" + state.getKills(uuid);
                             String b = ChatColor.stripColor(a);
 
-                            if (b.length() > 15) {
+                            if (b.length() > 16) {
                                 a = pName.substring(0, Math.min(pName.length(), 13)) + "§f: §a" + state.getKills(uuid);
                             }
                             sb.set(a, 2 + i);
@@ -142,7 +142,7 @@ public class GameScoreboard {
         }
     }
 
-    public void createTeam(Player player, Scoreboard scoreboard, String teamName) {
+    public void createTeam(Scoreboard scoreboard, String teamName) {
         Team team;
         if(scoreboard.getTeam(teamName) == null) scoreboard.registerNewTeam(teamName);
 

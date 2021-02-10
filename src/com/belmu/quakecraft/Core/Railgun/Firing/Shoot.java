@@ -117,6 +117,7 @@ public class Shoot {
 
                         if(state.running) state.addKills(player.getUniqueId(), 1);
                     }
+                    checkFirstBlood(player);
 
                     if(headshot(destination, entity)) {
                         headshot = true;
@@ -169,13 +170,16 @@ public class Shoot {
         }
         // Hit Detection
         Location low = block.getLocation();
-        Location high = low.clone().add(0.85, 0.85, 0.85);
+        Location high = low.clone().add(0.85D, 0.85D, 0.85D);
 
         // Gets the block's bounding box depending on the min and max coordinates values.
-            AxisAlignedBB blockBoundingBox = AxisAlignedBB.a(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ());
+        AxisAlignedBB blockBoundingBox = AxisAlignedBB.a(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ());
+
         // Check if the entities' bounding boxes intersect with the block's one.
         for(Entity entity : entities) {
-            if(((CraftEntity) entity).getHandle().getBoundingBox().b(blockBoundingBox)) {
+            AxisAlignedBB entityBoundingBox = ((CraftEntity) entity).getHandle().getBoundingBox().grow(0.625D, 0.625D, 0.625D);
+
+            if(entityBoundingBox.b(blockBoundingBox)) {
 
                 if(isValid(entity, player))
                     entitiesInSight.add(entity);
@@ -234,22 +238,22 @@ public class Shoot {
 
             if (player.isOnline()) {
                 int kills = state.gameKills.get(player.getUniqueId());
-                if(kills == GameOptions.toWin || kills > GameOptions.toWin) state.winner = player;
+                if(kills >= (GameOptions.toWin - 1)) state.winner = player;
             }
         }
     }
 
     public void checkFirstBlood(Player player) {
-        Player check = null;
+        UUID check = null;
         Set<Integer> set = new HashSet<>();
 
         for(int i = 0; i < state.gameKills.size(); i++) {
 
-            check = (Player) state.gameKills.keySet().toArray()[i];
+            check = (UUID) state.gameKills.keySet().toArray()[i];
             set.add((int) state.gameKills.values().toArray()[i]);
         }
 
-        if(set.size() == 1 && check == player) {
+        if(set.size() == 1 && check == player.getUniqueId()) {
             for (Player online : Bukkit.getOnlinePlayers())
                 ActionBar.sendActionBar(online, "§c§lFIRST BLOOD §7(" + player.getName() + ")");
         }

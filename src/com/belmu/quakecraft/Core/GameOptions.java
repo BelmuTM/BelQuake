@@ -19,7 +19,7 @@ public class GameOptions {
     public static double beforeKickAll = 18;
 
     public static FireworkEffect fireworkEffect = FireworkEffect.builder().with(FireworkEffect.Type.BALL).withColor(Color.LIME).withColor(Color.YELLOW).withColor(Color.FUCHSIA).flicker(true).build();
-    public static Railgun railgun = new Railgun(HoeType.IRON_HOE, "§dRailgun", 1D, 4.0D,
+    public static Railgun railgun = new Railgun(HoeType.IRON_HOE, "§dRailgun", 1.1D, 4.0D,
             EnumParticle.FLAME, KillSound.ANVIL_LAND, fireworkEffect);
 
     public static double invulnerabilityTime = 2.20D;

@@ -4,11 +4,13 @@ import com.belmu.quakecraft.Core.GameState;
 import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Quake;
 import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.BlockTallPlant;
 import net.minecraft.server.v1_8_R3.PacketPlayOutBlockBreakAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.Player;
@@ -133,6 +135,20 @@ public class CancelledEvents implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
         if(isValid(e.getPlayer())) e.setCancelled(true);
+
+        if(e.getBlock().getType() == Material.DOUBLE_PLANT) {
+
+            Block tallPlantBottom = e.getBlock();
+            Block tallPlantTop = e.getBlock().getRelative(BlockFace.UP);
+
+            setFlower(tallPlantBottom, true);
+            setFlower(tallPlantTop, false);
+        }
+    }
+
+    public void setFlower(Block block, boolean lower) {
+        block.setType(Material.DOUBLE_PLANT);
+        if(lower) block.setData((byte) 4); else block.setData((byte) 10);
     }
 
     @EventHandler
@@ -200,12 +216,6 @@ public class CancelledEvents implements Listener {
 
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent e) {
-        Block block = e.getBlock();
-
-        if(block.getType() == Material.DOUBLE_PLANT && e.getChangedType() == Material.AIR) {
-            block.setType(block.getType());
-            block.getState().update(true, false);
-        }
         e.setCancelled(true);
     }
 

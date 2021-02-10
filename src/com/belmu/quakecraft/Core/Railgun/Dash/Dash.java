@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
  */
 public class Dash {
 
-    static double force = 1.85;
+    static double force = 1.925;
     static double velocityY = 0.08;
 
     public static void dashPlayer(Player player) {

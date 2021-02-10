@@ -38,7 +38,7 @@ public class GameState {
     private Railgun railgun;
     private double time;
 
-    private double beforeStart;
+    public double beforeStart;
     private double timer = GameOptions.timer;
 
     public boolean isStarting;
@@ -85,6 +85,7 @@ public class GameState {
                 },
                 (t) -> {
                     beforeStart = t.getSecondsLeft();
+                    int maxPlayers = map.getMaxPlayers(map.getName());
 
                     if(beforeStart % 20 == 0 || beforeStart <= 10) {
                         Bukkit.broadcastMessage(Quake.prefix + "§eGame starts in §a" + (int) beforeStart + "s");
@@ -190,12 +191,12 @@ public class GameState {
         Countdown kickall = new Countdown(plugin,
                 GameOptions.beforeKickAll,
 
+                () -> {},
                 () -> {
                     gameKills.clear();
                     KillStreaks.killStreaks.clear();
                     Railgun.railguns.clear();
-                },
-                () -> {
+
                     for(Player online : Bukkit.getOnlinePlayers())
                         online.kickPlayer("§5§m                                " + "\n§6§lGame Over.\n§r §aThanks for playing!\n" + "§5§m                                ");
 
