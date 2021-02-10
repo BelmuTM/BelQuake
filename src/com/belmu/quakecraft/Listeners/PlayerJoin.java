@@ -6,6 +6,7 @@ import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Core.Packets.Scoreboard.GameScoreboard;
 import com.belmu.quakecraft.Core.Packets.TabList.TabList;
 import com.belmu.quakecraft.Quake;
+import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -50,7 +51,6 @@ public class PlayerJoin implements Listener {
         player.getInventory().clear();
         if(player.hasPotionEffect(PotionEffectType.SPEED)) player.removePotionEffect(PotionEffectType.SPEED);
         if(player.getGameMode() != GameMode.ADVENTURE && !player.isOp()) player.setGameMode(GameMode.ADVENTURE);
-
         /**
          * Constantly sending packets to the player who joined.
          * Refreshing both the tablist and the scoreboard.
@@ -80,6 +80,20 @@ public class PlayerJoin implements Listener {
                 setMapTime(map);
             }
             checkGame(map, game);
+        }
+        addToTeams(player, "quake");
+    }
+
+    public void addToTeams(Player player, String teamName) {
+        GameScoreboard scoreboard = new GameScoreboard(plugin);
+
+        for(Player scoreboardPlayers : scoreboard.scoreBoards.keySet()) {
+            BPlayerBoard playerBoard = scoreboard.scoreBoards.get(player);
+
+            if(playerBoard.getScoreboard() != null && playerBoard.getScoreboard().getTeam(teamName) != null &&
+                    !playerBoard.getScoreboard().getTeam(teamName).getEntries().contains(scoreboardPlayers.getName()))
+
+                playerBoard.getScoreboard().getTeam(teamName).addEntry(scoreboardPlayers.getName());
         }
     }
 

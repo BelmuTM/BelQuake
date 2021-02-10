@@ -6,6 +6,8 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +37,10 @@ public class SpawnProtection {
 
             () -> {
                 if(!invulnerable.contains(uuid)) invulnerable.add(uuid);
-
-                for(Player online : Bukkit.getOnlinePlayers()) {
-                    online.hidePlayer(player);
-                    ((CraftPlayer) online).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, ((CraftPlayer) player).getHandle()));
-                }
+                player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, (int) time, 2, true, false));
             },
             () -> {
                 invulnerable.remove(uuid);
-                for(Player online : Bukkit.getOnlinePlayers()) online.showPlayer(player);
             },
             (t) -> {}
         );

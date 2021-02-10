@@ -20,7 +20,7 @@ public class GameOptions {
 
     public static FireworkEffect fireworkEffect = FireworkEffect.builder().with(FireworkEffect.Type.BALL).withColor(Color.LIME).withColor(Color.YELLOW).withColor(Color.FUCHSIA).flicker(true).build();
     public static Railgun railgun = new Railgun(HoeType.IRON_HOE, "§dRailgun", 1D, 4.0D,
-            EnumParticle.VILLAGER_HAPPY, KillSound.LEVEL_UP, fireworkEffect);
+            EnumParticle.FLAME, KillSound.ANVIL_LAND, fireworkEffect);
 
-    public static double invulnerabilityTime = 2.3D;
+    public static double invulnerabilityTime = 2.20D;
 }

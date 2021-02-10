@@ -65,24 +65,18 @@ public enum PassableBlocks {
     STATIONARY_WATER,
     LAVA,
     STATIONARY_LAVA,
-    ICE;
+    ICE,
+    LEAVES,
+    LEAVES_2,
+    WOOD_PLATE,
+    STONE_PLATE,
+    IRON_PLATE,
+    GOLD_PLATE;
 
     public static boolean isFence(Material material) {
         return material.toString().toLowerCase().contains("fence");
     }
-
-    public static boolean isSlab(Material material) {
-        return material == Material.STEP || material == Material.WOOD_STEP;
-    }
-
-    public static boolean isLeaves(Material material) {
-        return material == Material.LEAVES || material == Material.LEAVES_2;
-    }
-
-    public static boolean isPressurePlate(Material material) {
-        return material == Material.STONE_PLATE || material == Material.WOOD_PLATE
-                || material == Material.IRON_PLATE || material == Material.GOLD_PLATE;
-    }
+    public static boolean isSlab(Material material) { return material == Material.STEP || material == Material.WOOD_STEP; }
 
     public static boolean contains(Material material) {
 

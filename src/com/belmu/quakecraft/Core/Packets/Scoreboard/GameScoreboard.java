@@ -43,11 +43,10 @@ public class GameScoreboard {
         if(!nb.getBoards().isEmpty() || nb.getBoards() != null) {
             int boards = nb.getBoards().size();
             sb = nb.createBoard(player, newScoreboard, "scoreboard_" + (boards + 1));
-        } else {
-            sb = nb.createBoard(player, newScoreboard, "scoreboard_0");
-        }
+        } else sb = nb.createBoard(player, newScoreboard, "scoreboard_0");
+
         sb.setName(name);
-        createTeam(player, newScoreboard, "quake");
+        createTeam(player, sb.getScoreboard(), "quake");
 
         scoreBoards.put(player, sb);
     }
@@ -94,6 +93,7 @@ public class GameScoreboard {
                     }
                 }
             } else {
+                sb.set("§8", 4);
                 int size = 0;
 
                 if(!state.sortedGameKills(true).isEmpty()) {
@@ -143,12 +143,15 @@ public class GameScoreboard {
     }
 
     public void createTeam(Player player, Scoreboard scoreboard, String teamName) {
-        Team team = scoreboard.getTeam(teamName) == null ? scoreboard.registerNewTeam(teamName) : scoreboard.getTeam(teamName);
+        Team team;
+        if(scoreboard.getTeam(teamName) == null) scoreboard.registerNewTeam(teamName);
+
+        team = scoreboard.getTeam(teamName);
 
         team.setCanSeeFriendlyInvisibles(true);
         team.setNameTagVisibility(NameTagVisibility.ALWAYS);
 
-        team.addEntry(player.getName());
+        for(Player online : Bukkit.getOnlinePlayers()) team.addEntry(online.getName());
     }
 
 }

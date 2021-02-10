@@ -40,9 +40,9 @@ public class CancelledEvents implements Listener {
             if(game != null) {
 
                 if (map.isFull())
-                    e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§dGame is full. §bSorry!\n" + "§7§m                                ");
+                    e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§cGame is full. §bSorry!\n" + "§7§m                                ");
                 if (game.running)
-                    e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§dGame has started. §bSorry!\n" + "§7§m                                ");
+                    e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§dGame has §astarted§c. §bSorry!\n" + "§7§m                                ");
             }
         }
     }
@@ -121,20 +121,23 @@ public class CancelledEvents implements Listener {
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent e ) { if(isValid(e.getPlayer())) e.setCancelled(true); }
+    public void onSpread(BlockSpreadEvent e) {
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onFade(BlockFadeEvent e) {
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent e) {
+        if(isValid(e.getPlayer())) e.setCancelled(true);
+    }
 
     @EventHandler
     public void onBlockDamage(BlockDamageEvent e ) {
-        Player player = e.getPlayer();
-        Block block = e.getBlock();
-
-        if(isValid(e.getPlayer())) {
-            e.setCancelled(true);
-
-            PacketPlayOutBlockBreakAnimation packet = new PacketPlayOutBlockBreakAnimation(0, new BlockPosition(block.getX(), block.getY(), block.getZ()), 0);
-            int dimension = ((CraftWorld) player.getWorld()).getHandle().dimension;
-            ((CraftServer) player.getServer()).getHandle().sendPacketNearby(block.getX(), block.getY(), block.getZ(), 120, dimension, packet);
-        }
+        if(isValid(e.getPlayer())) e.setCancelled(true);
     }
 
     @EventHandler
@@ -195,36 +198,15 @@ public class CancelledEvents implements Listener {
         }
     }
 
-    // I DIDN'T MAKE THIS METHOD. (https://www.spigotmc.org/threads/preventing-block-update-stackoverflow.360791/)
-
-    private static int checkCounter = 0;
-
-    private static long lastCancelTime = -1;
-    private static Material lastCancelledMaterial;
-
-    @SuppressWarnings("unused")
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
+    public void onBlockPhysics(BlockPhysicsEvent e) {
+        Block block = e.getBlock();
 
-        if (System.currentTimeMillis() < lastCancelTime && lastCancelledMaterial == event.getChangedType()) {
-            event.setCancelled(true);
-
-        } else {
-            checkCounter++;
-
-            if (checkCounter >= 500) {
-                checkCounter = 0;
-
-                int stackTraceLength = Thread.currentThread().getStackTrace().length;
-
-                if (stackTraceLength > 400) {
-                    lastCancelTime = System.currentTimeMillis() + 3;
-                    lastCancelledMaterial = event.getChangedType();
-
-                    event.setCancelled(true);
-                }
-            }
+        if(block.getType() == Material.DOUBLE_PLANT && e.getChangedType() == Material.AIR) {
+            block.setType(block.getType());
+            block.getState().update(true, false);
         }
+        e.setCancelled(true);
     }
 
     public boolean isValid(Player player) {

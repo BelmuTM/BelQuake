@@ -111,6 +111,8 @@ public class GameState {
                     /**
                      * If timer is lower than 0, then get the player that has the most kills.
                      */
+                    if(maximumKey(gameKills) == null) this.cancel();
+
                     OfflinePlayer player = Bukkit.getOfflinePlayer(maximumKey(gameKills));
                     if(player.isOnline()) winner = player;
                     this.cancel();
@@ -281,7 +283,7 @@ public class GameState {
     public double getTimer() { return timer; }
 
     public String getFormattedBeforeStart() {
-        return new SimpleDateFormat("mm:ss").format(beforeStart * 1000);
+        return new SimpleDateFormat("mm:ss").format((beforeStart - 1) * 1000);
     }
     public String getFormattedTimer() {
         return new SimpleDateFormat("mm:ss").format(timer * 1000);

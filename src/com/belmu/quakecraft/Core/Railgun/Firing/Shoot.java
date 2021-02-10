@@ -139,17 +139,6 @@ public class Shoot {
 
             if(headshot) hs = " §7(§eHeadshot§7)";
 
-            for(UUID uuid : state.gameKills.keySet()) {
-                Optional<java.util.Map.Entry<UUID, Integer>> entries = state.gameKills.entrySet().stream().findFirst();
-
-                if(entries.isPresent()) {
-                    if (uuid == player.getUniqueId() && entries.get().getKey() == uuid && entries.get().getValue() == 1) {
-                        for(Player online : Bukkit.getOnlinePlayers())
-                            ActionBar.sendActionBar(online, "§c§lFIRST BLOOD §7(" + player.getName() + ")");
-                    }
-                }
-            }
-
             Bukkit.broadcastMessage(Quake.prefix + "§7" + player.getName() + " §fgibbed §7" + target.getName() + hs);
             map.teleportPlayer(target);
         }
@@ -202,9 +191,7 @@ public class Shoot {
         if(!PassableBlocks.contains(material)) {
 
             if(location.getY() - block.getLocation().getY() > 0.5 && PassableBlocks.isSlab(material)) return false;
-            if(PassableBlocks.isLeaves(material)) return false;
             if(PassableBlocks.isFence(material)) return false;
-            if(PassableBlocks.isPressurePlate(material)) return false;
             return true;
         }
         return false;
@@ -250,6 +237,23 @@ public class Shoot {
                 if(kills == GameOptions.toWin || kills > GameOptions.toWin) state.winner = player;
             }
         }
+    }
+
+    public void checkFirstBlood(Player player) {
+        Player check = null;
+        Set<Integer> set = new HashSet<>();
+
+        for(int i = 0; i < state.gameKills.size(); i++) {
+
+            check = (Player) state.gameKills.keySet().toArray()[i];
+            set.add((int) state.gameKills.values().toArray()[i]);
+        }
+
+        if(set.size() == 1 && check == player) {
+            for (Player online : Bukkit.getOnlinePlayers())
+                ActionBar.sendActionBar(online, "§c§lFIRST BLOOD §7(" + player.getName() + ")");
+        }
+
     }
 
 }
