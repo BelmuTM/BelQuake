@@ -17,6 +17,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.*;
+import org.bukkit.material.Step;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -141,7 +142,7 @@ public class Shoot {
             if(headshot) hs = " §7(§eHeadshot§7)";
 
             Bukkit.broadcastMessage(Quake.prefix + "§7" + player.getName() + " §fgibbed §7" + target.getName() + hs);
-            map.teleportPlayer(target);
+            map.teleportToSpawnPoint(target);
         }
 
         // Multiple kills messages. (e.g.: DOUBLE KILL, PENTA KILL,...)
@@ -177,7 +178,7 @@ public class Shoot {
 
         // Check if the entities' bounding boxes intersect with the block's one.
         for(Entity entity : entities) {
-            AxisAlignedBB entityBoundingBox = ((CraftEntity) entity).getHandle().getBoundingBox().grow(0.625D, 0.625D, 0.625D);
+            AxisAlignedBB entityBoundingBox = ((CraftEntity) entity).getHandle().getBoundingBox().grow(0.60D, 0.60D, 0.60D);
 
             if(entityBoundingBox.b(blockBoundingBox)) {
 
@@ -194,7 +195,16 @@ public class Shoot {
 
         if(!PassableBlocks.contains(material)) {
 
-            if(location.getY() - block.getLocation().getY() > 0.5 && PassableBlocks.isSlab(material)) return false;
+            if(PassableBlocks.isSlab(material)) {
+                Step slab = (Step) block.getState().getData();
+
+                if(!slab.isInverted()) { // Bottom
+                    return location.getY() - block.getLocation().getY() > 0.5;
+                } else if(slab.isInverted()) { // Top
+                    return location.getY() - block.getLocation().getY() <= 0.5;
+                }
+                return false;
+            }
             if(PassableBlocks.isFence(material)) return false;
             return true;
         }
@@ -236,7 +246,7 @@ public class Shoot {
 
         if(state.getTimer() > 0) {
 
-            if (player.isOnline()) {
+            if(player.isOnline()) {
                 int kills = state.gameKills.get(player.getUniqueId());
                 if(kills >= (GameOptions.toWin - 1)) state.winner = player;
             }
@@ -254,7 +264,7 @@ public class Shoot {
         }
 
         if(set.size() == 1 && check == player.getUniqueId()) {
-            for (Player online : Bukkit.getOnlinePlayers())
+            for(Player online : Bukkit.getOnlinePlayers())
                 ActionBar.sendActionBar(online, "§c§lFIRST BLOOD §7(" + player.getName() + ")");
         }
 

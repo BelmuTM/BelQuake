@@ -2,6 +2,7 @@ package com.belmu.quakecraft.Core;
 
 import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Core.Packets.Effects;
+import com.belmu.quakecraft.Core.Packets.Scoreboard.GameScoreboard;
 import com.belmu.quakecraft.Core.Packets.Title;
 import com.belmu.quakecraft.Core.Railgun.Railgun;
 import com.belmu.quakecraft.Core.Stats.KillStreaks;
@@ -10,6 +11,7 @@ import com.belmu.quakecraft.Quake;
 import com.belmu.quakecraft.Utils.Countdown;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -40,6 +42,7 @@ public class GameState {
 
     public double beforeStart;
     private double timer = GameOptions.timer;
+    public boolean shrinkedTimer = false;
 
     public boolean isStarting;
     public boolean running;
@@ -47,8 +50,8 @@ public class GameState {
     private Countdown start;
 
     public void start(Railgun railgun, double time) {
-        int railgunSlot = 0;
         Map map = plugin.gameMap;
+        GameScoreboard scoreboard = new GameScoreboard(plugin);
 
         start = new Countdown(plugin,
                 time,
@@ -70,25 +73,34 @@ public class GameState {
                     startGameChecks();
 
                     for(Player online : Bukkit.getOnlinePlayers()) {
+                        scoreboard.addToTeams(online, online.getName());
                         gameKills.put(online.getUniqueId(), 0);
 
                         GameSound sound = GameSound.PLING;
                         online.playSound(online.getLocation(), sound.getSound(), 1.5f, sound.getPitch());
 
-                        map.teleportPlayer(online);
+                        map.teleportToSpawnPoint(online);
 
-                        online.getInventory().setItem(railgunSlot, railgun.getItemStack());
-                        online.getInventory().setHeldItemSlot(railgunSlot);
-                        online.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1), false);
+                        online.getInventory().setItem(GameOptions.railgunSlot, railgun.getItemStack());
+                        online.getInventory().setHeldItemSlot(GameOptions.railgunSlot);
+                        online.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1, false, false));
                     }
                     Bukkit.broadcastMessage(Quake.prefix + "§eGame has started.§a Good luck!");
                 },
                 (t) -> {
                     beforeStart = t.getSecondsLeft();
-                    int maxPlayers = map.getMaxPlayers(map.getName());
+                    int half = (int) (map.getMaxPlayers(map.getName())) / 2;
 
-                    if(beforeStart % 20 == 0 || beforeStart <= 10) {
-                        Bukkit.broadcastMessage(Quake.prefix + "§eGame starts in §a" + (int) beforeStart + "s");
+                    if(map.getMaxPlayers(map.getName()) > 0) {
+                        if(Bukkit.getOnlinePlayers().size() >= half &&
+                                !shrinkedTimer && t.getSecondsLeft() != 0) {
+                            shrinkedTimer = true;
+                            t.setSecondsLeft(beforeStart /= 2);
+                        }
+                    }
+
+                    if(t.getSecondsLeft() % 20 == 0 || t.getSecondsLeft() <= 10) {
+                        Bukkit.broadcastMessage(Quake.prefix + "§eGame starts in §a" + (int) t.getSecondsLeft() + "s");
 
                         GameSound sound = GameSound.CLICK;
                         for(Player online : Bukkit.getOnlinePlayers())
@@ -106,16 +118,15 @@ public class GameState {
             public void run() {
                 if(running) timer--;
                 /**
-                 * If timer is geater than 0 and a player has reached enough kills to win.
+                 * If timer is greater than 0 and a player has reached enough kills to win.
                  */
-                if(timer <= 0) {
+                if(timer < 0) {
                     /**
                      * If timer is lower than 0, then get the player that has the most kills.
                      */
-                    if(maximumKey(gameKills) == null) this.cancel();
 
                     OfflinePlayer player = Bukkit.getOfflinePlayer(maximumKey(gameKills));
-                    if(player.isOnline()) winner = player;
+                    winner = player;
                     this.cancel();
                 }
             }
@@ -191,7 +202,9 @@ public class GameState {
         Countdown kickall = new Countdown(plugin,
                 GameOptions.beforeKickAll,
 
-                () -> {},
+                () -> {
+                    timer = 0;
+                },
                 () -> {
                     gameKills.clear();
                     KillStreaks.killStreaks.clear();
@@ -206,6 +219,7 @@ public class GameState {
 
                     running = false;
                     isStarting = false;
+                    winner = null;
                 },
                 (t) -> {}
         );
@@ -223,12 +237,12 @@ public class GameState {
                 if(running && !isStarting) {
 
                     if(map != null) {
-                        if (!map.isEnough()) {
+                        if(!map.isEnough() && Bukkit.getOnlinePlayers().size() < 2) {
                             winner = null;
                             stop();
                             this.cancel();
                         }
-                    } else { stop(); this.cancel(); }
+                    } else { this.cancel(); }
 
                     if(winner != null) {
                         stop();
@@ -255,7 +269,7 @@ public class GameState {
                         Bukkit.broadcastMessage(Quake.prefix + "§e§lStart cancelled. §r§cNot enough players!");
 
                         GameSound sound = GameSound.CLICK;
-                        for (Player online : Bukkit.getOnlinePlayers()) {
+                        for(Player online : Bukkit.getOnlinePlayers()) {
                             title.sendTitle(online, "Start", ChatColor.YELLOW, 0, 75, 0);
                             title.sendSubTitle(online, "Cancelled", ChatColor.RED, 0, 75, 0);
                             online.playSound(online.getLocation(), sound.getSound(), 1.5f, sound.getPitch());
@@ -284,7 +298,7 @@ public class GameState {
     public double getTimer() { return timer; }
 
     public String getFormattedBeforeStart() {
-        return new SimpleDateFormat("mm:ss").format((beforeStart - 1) * 1000);
+        return new SimpleDateFormat("mm:ss").format(beforeStart * 1000);
     }
     public String getFormattedTimer() {
         return new SimpleDateFormat("mm:ss").format(timer * 1000);

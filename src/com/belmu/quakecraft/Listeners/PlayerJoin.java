@@ -6,7 +6,6 @@ import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Core.Packets.Scoreboard.GameScoreboard;
 import com.belmu.quakecraft.Core.Packets.TabList.TabList;
 import com.belmu.quakecraft.Quake;
-import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 /**
  * @author Belmu (https://github.com/BelmuTM/)
@@ -37,8 +38,12 @@ public class PlayerJoin implements Listener {
         TabList tabList = new TabList(plugin);
 
         Player player = e.getPlayer();
-        String playerCount = "§8(§7" + Bukkit.getOnlinePlayers().size() + "§8/§d" + Bukkit.getMaxPlayers() + "§8)";
+        int maxPlayers;
 
+        if(map != null && map.getMaxPlayers(map.getName()) > 0) maxPlayers = map.getMaxPlayers(map.getName());
+        else maxPlayers = Bukkit.getMaxPlayers();
+
+        String playerCount = "§8(§7" + Bukkit.getOnlinePlayers().size() + "§8/§d" + maxPlayers + "§8)";
         String playerName;
 
         if(player.isOp()) playerName = "§8[§c✦§8] §c" + player.getName();
@@ -55,8 +60,11 @@ public class PlayerJoin implements Listener {
          * Constantly sending packets to the player who joined.
          * Refreshing both the tablist and the scoreboard.
          */
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        Scoreboard teamScoreboard = scoreboardManager.getMainScoreboard();
+
         tabList.execute(player);
-        scoreboard.createScoreboard(player, "§d§lQuakecraft");
+        scoreboard.createScoreboard(player, "§d§lQuakecraft", teamScoreboard);
 
         new BukkitRunnable() {
 
@@ -81,20 +89,7 @@ public class PlayerJoin implements Listener {
             }
             checkGame(map, game);
         }
-        addToTeams(player, player.getName());
-    }
-
-    public void addToTeams(Player player, String teamName) {
-        GameScoreboard scoreboard = new GameScoreboard(plugin);
-        BPlayerBoard playerBoard = scoreboard.scoreBoards.get(player);
-
-        for(Player scoreboardPlayers : scoreboard.scoreBoards.keySet()) {
-
-            if(playerBoard.getScoreboard() != null && playerBoard.getScoreboard().getTeam(teamName) != null &&
-                    !playerBoard.getScoreboard().getTeam(teamName).getEntries().contains(scoreboardPlayers.getName()))
-
-                playerBoard.getScoreboard().getTeam(teamName).addEntry(scoreboardPlayers.getName());
-        }
+        scoreboard.addToTeams(player, player.getName());
     }
 
     public void checkGame(Map map, GameState game) {

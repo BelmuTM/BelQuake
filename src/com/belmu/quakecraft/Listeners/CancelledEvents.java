@@ -44,7 +44,7 @@ public class CancelledEvents implements Listener {
                 if (map.isFull())
                     e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§cGame is full. §bSorry!\n" + "§7§m                                ");
                 if (game.running)
-                    e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§dGame has §astarted§c. §bSorry!\n" + "§7§m                                ");
+                    e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§dGame has §astarted§d. §bSorry!\n" + "§7§m                                ");
             }
         }
     }
@@ -192,7 +192,7 @@ public class CancelledEvents implements Listener {
         Player player = e.getPlayer();
 
         if(player.getLocation().getY() <= 4)
-            plugin.gameMap.teleportPlayer(player);
+            plugin.gameMap.teleportToSpawnPoint(player);
     }
 
     @EventHandler

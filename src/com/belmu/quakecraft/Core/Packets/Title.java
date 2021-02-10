@@ -89,6 +89,6 @@ public class Title {
                 if(Bukkit.getOnlinePlayers().size() == 0) return;
                 sendTitle(player, message, ChatColor.BLACK, 0, 65, 0);
             }
-        }.runTaskTimer(plugin, 8, 8);
+        }.runTaskTimer(plugin, 12, 12);
     }
 }

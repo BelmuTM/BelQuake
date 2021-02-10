@@ -13,7 +13,7 @@ public enum KillSound {
     PIG_DEATH(1f),
     COW_HURT(1.75f),
     CREEPER_DEATH(1.5f),
-    ANVIL_LAND(1.5f),
+    ANVIL_LAND(1.0f),
     GHAST_DEATH(1.5f),
     DRAGON_GROWL(1.5f),
     VILLAGER_YES(1f),

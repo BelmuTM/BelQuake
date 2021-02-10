@@ -22,5 +22,7 @@ public class GameOptions {
     public static Railgun railgun = new Railgun(HoeType.IRON_HOE, "§dRailgun", 1.1D, 4.0D,
             EnumParticle.FLAME, KillSound.ANVIL_LAND, fireworkEffect);
 
+    public static int railgunSlot = 0;
+
     public static double invulnerabilityTime = 2.20D;
 }

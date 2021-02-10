@@ -23,7 +23,7 @@ public class ListenersManager {
         reg(new CancelledEvents(plugin));
         reg(new PlayerChat());
         reg(new PlayerJoin(plugin));
-        reg(new PlayerQuit());
+        reg(new PlayerQuit(plugin));
 
         // Core Events
         reg(new ShootEvent(plugin));

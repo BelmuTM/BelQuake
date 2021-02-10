@@ -53,6 +53,7 @@ public class Countdown implements Runnable {
 
     public double getTotalSeconds() { return seconds; }
     public double getSecondsLeft() { return secondsLeft; }
+    public void setSecondsLeft(double seconds) { secondsLeft = seconds; }
 
     public void scheduleTimer() {
         this.assignedTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, 0L, 20L);

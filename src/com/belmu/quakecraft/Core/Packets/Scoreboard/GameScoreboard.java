@@ -33,20 +33,18 @@ public class GameScoreboard {
     String frame_0 = "§5§lQuakecraft";
     String frame_1 = "§d§lQuakecraft";
 
-    public void createScoreboard(Player player, String name) {
-        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-        Scoreboard newScoreboard = scoreboardManager.getNewScoreboard();
+    public void createScoreboard(Player player, String name, Scoreboard scoreboard) {
 
         Netherboard nb = Netherboard.instance();
         BPlayerBoard sb;
 
         if(!nb.getBoards().isEmpty() || nb.getBoards() != null) {
             int boards = nb.getBoards().size();
-            sb = nb.createBoard(player, newScoreboard, "scoreboard_" + (boards + 1));
-        } else sb = nb.createBoard(player, newScoreboard, "scoreboard_0");
+            sb = nb.createBoard(player, scoreboard, "scoreboard_" + (boards + 1));
+        } else sb = nb.createBoard(player, scoreboard, "scoreboard_0");
 
         sb.setName(name);
-        createTeam(sb.getScoreboard(), player.getName());
+        createTeam(scoreboard, player.getName());
 
         scoreBoards.put(player, sb);
     }
@@ -151,7 +149,20 @@ public class GameScoreboard {
         team.setCanSeeFriendlyInvisibles(true);
         team.setNameTagVisibility(NameTagVisibility.ALWAYS);
 
-        for(Player online : Bukkit.getOnlinePlayers()) team.addEntry(online.getName());
+        for(Player online : Bukkit.getOnlinePlayers()) if(!team.getEntries().contains(online.getName())) team.addEntry(online.getName());
+    }
+
+    public void addToTeams(Player player, String teamName) {
+        GameScoreboard scoreboard = new GameScoreboard(plugin);
+        BPlayerBoard playerBoard = scoreboard.scoreBoards.get(player);
+
+        for(Player scoreboardPlayers : scoreboard.scoreBoards.keySet()) {
+
+            if(playerBoard.getScoreboard() != null && playerBoard.getScoreboard().getTeam(teamName) != null &&
+                    !playerBoard.getScoreboard().getTeam(teamName).getEntries().contains(scoreboardPlayers.getName()))
+
+                playerBoard.getScoreboard().getTeam(teamName).addEntry(scoreboardPlayers.getName());
+        }
     }
 
 }

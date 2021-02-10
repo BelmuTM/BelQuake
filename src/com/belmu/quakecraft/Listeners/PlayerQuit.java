@@ -1,5 +1,6 @@
 package com.belmu.quakecraft.Listeners;
 
+import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Quake;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,11 +13,22 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerQuit implements Listener {
 
+    public final Quake plugin;
+    public PlayerQuit(Quake plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
-        String playerCount = "§8(§7" + (Bukkit.getOnlinePlayers().size() - 1) + "§8/§d" + Bukkit.getMaxPlayers() + "§8)";
+        Map map = plugin.gameMap;
 
+        Player player = e.getPlayer();
+        int maxPlayers;
+
+        if(map != null && map.getMaxPlayers(map.getName()) > 0) maxPlayers = map.getMaxPlayers(map.getName());
+        else maxPlayers = Bukkit.getMaxPlayers();
+
+        String playerCount = "§8(§7" + Bukkit.getOnlinePlayers().size() + "§8/§d" + maxPlayers + "§8)";
         String playerName;
 
         if(player.isOp()) playerName = "§8[§c✦§8] §c" + player.getName();

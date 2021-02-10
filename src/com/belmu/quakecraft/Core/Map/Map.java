@@ -166,7 +166,7 @@ public class Map {
      * amount of players around.
      */
 
-    public void teleportPlayer(Player player) {
+    public void teleportToSpawnPoint(Player player) {
         if(getSpawnPoints().isEmpty()) return;
 
         player.teleport(randomSpawnPoint());
@@ -178,7 +178,7 @@ public class Map {
     static int searchQuery = 6;
 
     public Location randomSpawnPoint() {
-
+        Location spawn = null;
         // Gets all spawn points of a map.
         for(SpawnPoint spawnPoint : getSpawnPoints()) {
 
@@ -191,24 +191,24 @@ public class Map {
             float minimum = Float.POSITIVE_INFINITY;
             int players = 0;
             if(!nearEntities.isEmpty()) {
-                for (Entity player : nearEntities) {
+                for(Entity entities : nearEntities) {
 
                     // If the nearby entity is a player, adds 1 to the players amount.
-                    if (player instanceof Player)
+                    if (entities instanceof Player)
                         players += 1;
                 }
             }
+            Random r = new Random();
+            if(players == 0) return getSpawnPoints().get(r.nextInt(getSpawnPoints().size())).getLocation();
 
-            // If the players amount is below the minimum, then set it to the minimum.
+            // If the players amount is the minimum, then set it to the minimum.
             // Then returns the spawn point.
-            if(players == 0) return getSpawnPoints().get(new Random().nextInt(getSpawnPoints().size())).getLocation();
-
             if(players < minimum) {
                 minimum = players;
-                return location;
+                spawn = location;
             }
         }
-        return null;
+        return spawn;
     }
 
 }
