@@ -178,10 +178,9 @@ public class Shoot {
             if(!(next instanceof LivingEntity) || next == player)
                 iterator.remove();
         }
-
         // Hit Detection
         Location low = block.getLocation();
-        Location high = low.clone().add(0.82, 0.82, 0.82);
+        Location high = low.clone().add(0.85, 0.85, 0.85);
 
         // Gets the block's bounding box depending on the min and max coordinates values.
             AxisAlignedBB blockBoundingBox = AxisAlignedBB.a(low.getX(), low.getY(), low.getZ(), high.getX(), high.getY(), high.getZ());

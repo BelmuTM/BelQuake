@@ -32,6 +32,7 @@ public class Quake extends JavaPlugin implements Listener {
     public static String prefix = "§8[§dQuake§8] » §7";
 
     public MapManager mapManager;
+    public int mapTime;
     public StatsConfig statsConfig;
 
     public GameState gameState;
@@ -53,7 +54,7 @@ public class Quake extends JavaPlugin implements Listener {
         setProperties();
         Bukkit.getWorld("world").setGameRuleValue("doDaylightCycle", "false");
 
-        mapManager.chooseGameMap();
+        mapTime = mapManager.chooseGameMap();
 
         mapManager.saveConfig();
         gameState.running = false;

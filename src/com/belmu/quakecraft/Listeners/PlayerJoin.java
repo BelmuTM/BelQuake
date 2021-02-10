@@ -3,11 +3,12 @@ package com.belmu.quakecraft.Listeners;
 import com.belmu.quakecraft.Core.GameOptions;
 import com.belmu.quakecraft.Core.GameState;
 import com.belmu.quakecraft.Core.Map.Map;
-import com.belmu.quakecraft.Core.Packets.Scoreboard.Scoreboard;
+import com.belmu.quakecraft.Core.Packets.Scoreboard.GameScoreboard;
 import com.belmu.quakecraft.Core.Packets.TabList.TabList;
 import com.belmu.quakecraft.Quake;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +31,7 @@ public class PlayerJoin implements Listener {
         Map map = plugin.gameMap;
         GameState game = plugin.gameState;
 
-        Scoreboard scoreboard = new Scoreboard(plugin);
+        GameScoreboard scoreboard = new GameScoreboard(plugin);
         TabList tabList = new TabList(plugin);
 
         Player player = e.getPlayer();
@@ -69,9 +70,13 @@ public class PlayerJoin implements Listener {
          */
 
         if(map != null) {
-            Location mainSpawn = map.getMainSpawn(map.getName());
-            if(mainSpawn != null) player.teleport(mainSpawn);
 
+            Location mainSpawn = map.getMainSpawn(map.getName());
+            if(mainSpawn != null) {
+                player.teleport(mainSpawn);
+
+                setMapTime(map);
+            }
             checkGame(map, game);
         }
     }
@@ -88,6 +93,21 @@ public class PlayerJoin implements Listener {
                     game.start(GameOptions.railgun, GameOptions.timeBeforeStart);
             }
         }
+    }
+
+    public void setMapTime(Map map) {
+
+        /**
+         * Sets the world time depending on the random "night" or "day" value picked before.
+         */
+        World mapWorld = map.getMainSpawn(map.getName()).getWorld();
+        long day = 6000L;
+        long night = 18000L;
+
+        if(plugin.mapTime == 1 && mapWorld.getTime() != day)
+            mapWorld.setTime(day);
+        else
+        if(mapWorld.getTime() != night) mapWorld.setTime(night);
     }
 
 }

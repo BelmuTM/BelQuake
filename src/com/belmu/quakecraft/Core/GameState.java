@@ -2,7 +2,6 @@ package com.belmu.quakecraft.Core;
 
 import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Core.Packets.Effects;
-import com.belmu.quakecraft.Core.Packets.Scoreboard.PlayerTeam;
 import com.belmu.quakecraft.Core.Packets.Title;
 import com.belmu.quakecraft.Core.Railgun.Railgun;
 import com.belmu.quakecraft.Core.Stats.KillStreaks;
@@ -71,10 +70,7 @@ public class GameState {
                     startGameChecks();
 
                     for(Player online : Bukkit.getOnlinePlayers()) {
-
                         gameKills.put(online.getUniqueId(), 0);
-                        PlayerTeam pTeam = new PlayerTeam(plugin);
-                        pTeam.addToTeam(online);
 
                         GameSound sound = GameSound.PLING;
                         online.playSound(online.getLocation(), sound.getSound(), 1.5f, sound.getPitch());
@@ -84,9 +80,6 @@ public class GameState {
                         online.getInventory().setItem(railgunSlot, railgun.getItemStack());
                         online.getInventory().setHeldItemSlot(railgunSlot);
                         online.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1), false);
-
-                        System.out.println(pTeam.team.getNameTagVisibility());
-                        for(String string : pTeam.team.getEntries()) System.out.println(string);
                     }
                     Bukkit.broadcastMessage(Quake.prefix + "§eGame has started.§a Good luck!");
                 },

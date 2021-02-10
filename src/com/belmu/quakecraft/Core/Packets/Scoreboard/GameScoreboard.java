@@ -8,18 +8,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
 /**
  * @author Belmu (https://github.com/BelmuTM/)
  */
-public class Scoreboard {
+public class GameScoreboard {
 
     public final Quake plugin;
     public final GameState state;
-    public Scoreboard(Quake plugin) {
+    public GameScoreboard(Quake plugin) {
         this.plugin = plugin;
         this.state = plugin.gameState;
     }
@@ -32,16 +35,19 @@ public class Scoreboard {
 
     public void createScoreboard(Player player, String name) {
         ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        Scoreboard newScoreboard = scoreboardManager.getNewScoreboard();
+
         Netherboard nb = Netherboard.instance();
         BPlayerBoard sb;
 
         if(!nb.getBoards().isEmpty() || nb.getBoards() != null) {
             int boards = nb.getBoards().size();
-            sb = nb.createBoard(player, scoreboardManager.getMainScoreboard(), "scoreboard_" + (boards + 1));
+            sb = nb.createBoard(player, newScoreboard, "scoreboard_" + (boards + 1));
         } else {
-            sb = nb.createBoard(player, scoreboardManager.getMainScoreboard(), "scoreboard_0");
+            sb = nb.createBoard(player, newScoreboard, "scoreboard_0");
         }
         sb.setName(name);
+        createTeam(player, newScoreboard, "quake");
 
         scoreBoards.put(player, sb);
     }
@@ -134,6 +140,15 @@ public class Scoreboard {
             sb.setName(frame_1);
             titleFrame = 0;
         }
+    }
+
+    public void createTeam(Player player, Scoreboard scoreboard, String teamName) {
+        Team team = scoreboard.getTeam(teamName) == null ? scoreboard.registerNewTeam(teamName) : scoreboard.getTeam(teamName);
+
+        team.setCanSeeFriendlyInvisibles(true);
+        team.setNameTagVisibility(NameTagVisibility.ALWAYS);
+
+        team.addEntry(player.getName());
     }
 
 }

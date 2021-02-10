@@ -85,7 +85,7 @@ public class MapManager {
         return null;
     }
 
-    public void chooseGameMap() {
+    public int chooseGameMap() {
 
         if(!getMaps().isEmpty()) {
             Random r = new Random();
@@ -93,7 +93,11 @@ public class MapManager {
 
             Map map = getMaps().get(r.nextInt(upper));
             if(plugin.gameMap == null) plugin.gameMap = map;
+
+            int timeChooser = r.nextInt();
+            if(timeChooser % 2 == 0) return 1; // Day
         }
+        return 0; // Night
     }
 
     public SpawnPoint getSpawnPointByName(Map map, String name) {
