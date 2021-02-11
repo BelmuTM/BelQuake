@@ -143,9 +143,7 @@ public class CancelledEvents implements Listener {
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent e) {
-        e.setCancelled(true);
-    }
+    public void onBlockPhysics(BlockPhysicsEvent e) { e.setCancelled(true); }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
@@ -160,6 +158,11 @@ public class CancelledEvents implements Listener {
     @EventHandler
     public void onPickupItem(PlayerPickupItemEvent e) {
         if(isValid(e.getPlayer())) e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onDespawnItem(ItemDespawnEvent e) {
+        e.setCancelled(true);
     }
 
     @EventHandler

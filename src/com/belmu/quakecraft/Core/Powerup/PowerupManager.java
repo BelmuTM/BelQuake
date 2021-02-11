@@ -66,13 +66,13 @@ public class PowerupManager {
 
     public void despawnPowerups() {
 
+        if(!powerupsItems.isEmpty()) for(Item item : powerupsItems.values()) item.remove();
         if(!powerups.isEmpty()) {
             for (Powerup powerup : powerups) {
                 powerups.remove(powerup);
                 powerupsItems.remove(powerup);
             }
         }
-        if(!powerupsItems.isEmpty()) for (Item item : powerupsItems.values()) item.remove();
     }
 
     public Map<UUID, Double> powerupTime = new HashMap<>();
@@ -113,6 +113,8 @@ public class PowerupManager {
         PowerupType type = powerup.getPowerupType();
 
         if(type == PowerupType.RAPID_FIRE) {
+            Railgun railgun = Railgun.getPlayerRailgun(player);
+
             new BukkitRunnable() {
 
                 @Override
@@ -120,8 +122,12 @@ public class PowerupManager {
                     if(!player.isOnline()) this.cancel();
                     if(!powerupTime.containsKey(player.getUniqueId())) this.cancel();
 
-                    Shoot shoot = new Shoot(plugin);
-                    shoot.shootRailgun(player, Railgun.getPlayerRailgun(player));
+                    if(railgun == null || railgun.getItemStack() == null) return;
+
+                    if(player.getItemInHand() == railgun.getItemStack()) {
+                        Shoot shoot = new Shoot(plugin);
+                        shoot.shootRailgun(player, railgun);
+                    }
                 }
             }.runTaskTimer(plugin, 12, 12);
         }

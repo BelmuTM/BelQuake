@@ -61,7 +61,7 @@ public class Title {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(length);
     }
 
-    Map<Player, Integer> frames = new HashMap<>();
+    private Map<Player, Integer> frames = new HashMap<>();
     public void winTitle(Player player, boolean winner) {
         frames.put(player, 0);
 
