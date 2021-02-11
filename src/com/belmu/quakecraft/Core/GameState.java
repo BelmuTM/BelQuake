@@ -57,6 +57,7 @@ public class GameState {
                 time,
 
                 () -> {
+                    gameKills.clear();
                     this.railgun = railgun;
                     this.time = time;
 
@@ -120,7 +121,7 @@ public class GameState {
                 /**
                  * If timer is greater than 0 and a player has reached enough kills to win.
                  */
-                if(timer <= -1) {
+                if(running && timer <= -1) {
                     /**
                      * If timer is lower than 0, then get the player that has the most kills.
                      */
