@@ -230,7 +230,7 @@ public class QuakeCmd implements CommandExecutor {
                             player.sendMessage(wrongUsage);
                     } else if(args[0].equalsIgnoreCase("leaderboard") || args[0].equalsIgnoreCase("lb")) {
 
-                        LinkedHashMap<UUID, Integer> sortedKills = plugin.gameState.sortedGameKills(true);
+                        LinkedHashMap<UUID, Integer> sortedKills = plugin.statsConfig.sortedKills();
                         StringBuilder leaderboard = new StringBuilder();
 
                         if(args.length == 1) {

@@ -13,6 +13,8 @@ import com.belmu.quakecraft.Core.Stats.StatsConfig;
 import com.belmu.quakecraft.Core.Stats.StreaksMessages;
 import com.belmu.quakecraft.Quake;
 import net.minecraft.server.v1_8_R3.AxisAlignedBB;
+import net.minecraft.server.v1_8_R3.BlockStep;
+import net.minecraft.server.v1_8_R3.BlockStepAbstract;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
@@ -194,16 +196,8 @@ public class Shoot {
 
         if(!PassableBlocks.contains(material)) {
 
-            if(PassableBlocks.isSlab(material)) {
-                Step slab = (Step) block.getState();
-
-                if(!slab.isInverted()) { // Bottom
-                    return location.getY() - block.getLocation().getY() > 0.5;
-                } else if(slab.isInverted()) { // Top
-                    return location.getY() - block.getLocation().getY() <= 0.5;
-                }
-                return false;
-            }
+            if(PassableBlocks.isSlab(material))
+                return location.getY() - block.getLocation().getY() > 0.5;
             if(PassableBlocks.isFence(material)) return false;
             return true;
         }
@@ -243,9 +237,9 @@ public class Shoot {
 
     public void checkWin(Player player) {
 
-        if(state.getTimer() > 0) {
+        if(state.getTimer() > 0 && state.running) {
 
-            if(player.isOnline()) {
+            if(player.isOnline() && state.gameKills.containsKey(player.getUniqueId())) {
                 int kills = state.gameKills.get(player.getUniqueId());
                 if(kills >= (GameOptions.toWin - 1)) state.winner = player;
             }

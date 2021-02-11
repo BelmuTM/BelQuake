@@ -35,7 +35,7 @@ public class GameState {
     }
 
     public java.util.Map<UUID, Integer> gameKills = new HashMap<>();
-    public OfflinePlayer winner;
+    public OfflinePlayer winner = null;
 
     private Railgun railgun;
     private double time;
@@ -68,6 +68,7 @@ public class GameState {
                 () -> {
                     isStarting = false;
                     running = true;
+                    winner = null;
 
                     startTimer();
                     startGameChecks();
@@ -116,19 +117,21 @@ public class GameState {
 
             @Override
             public void run() {
-                if(running) timer--;
                 /**
                  * If timer is greater than 0 and a player has reached enough kills to win.
                  */
-                if(timer < 0) {
+                if(timer <= -1) {
                     /**
                      * If timer is lower than 0, then get the player that has the most kills.
                      */
+                    if(winner == null) Bukkit.broadcastMessage(Quake.prefix + "§e§lTIME §r§aIS UP!");
 
                     OfflinePlayer player = Bukkit.getOfflinePlayer(maximumKey(gameKills));
                     winner = player;
                     this.cancel();
                 }
+                if(running) timer--;
+
             }
         }.runTaskTimer(plugin, 20, 20);
     }
@@ -237,14 +240,13 @@ public class GameState {
                 if(running && !isStarting) {
 
                     if(map != null) {
-                        if(!map.isEnough() && Bukkit.getOnlinePlayers().size() < 2) {
+                        if(Bukkit.getOnlinePlayers().size() < 2) {
                             winner = null;
                             stop();
                             this.cancel();
                         }
-                    } else { this.cancel(); }
-
-                    if(winner != null) {
+                    }
+                    if(winner != null && gameKills.get(winner.getUniqueId()) >= GameOptions.toWin) {
                         stop();
                         this.cancel();
                     }
