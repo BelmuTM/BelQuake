@@ -83,7 +83,7 @@ public class GameScoreboard {
                             sb.set("§0", 3);
                         }
                     } else {
-                        if (state.isStarting) {
+                        if (state.starting) {
                             sb.set("§eStarting in", 2);
                             sb.set("§a" + state.getFormattedBeforeStart(), 1);
                             sb.set("§0", 3);

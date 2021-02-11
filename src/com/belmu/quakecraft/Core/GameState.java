@@ -38,13 +38,12 @@ public class GameState {
     public OfflinePlayer winner = null;
 
     private Railgun railgun;
-    private double time;
 
     public double beforeStart;
     private double timer = GameOptions.timer;
     public boolean shrinkedTimer = false;
 
-    public boolean isStarting;
+    public boolean starting;
     public boolean running;
 
     private Countdown start;
@@ -58,18 +57,19 @@ public class GameState {
 
                 () -> {
                     gameKills.clear();
-                    this.railgun = railgun;
-                    this.time = time;
+                    winner = null;
+                    timer = GameOptions.timer;
 
-                    isStarting = true;
+                    this.railgun = railgun;
+
+                    starting = true;
                     running = false;
 
                     startCancelledCheck();
                 },
                 () -> {
-                    isStarting = false;
+                    starting = false;
                     running = true;
-                    winner = null;
 
                     startTimer();
                     startGameChecks();
@@ -90,19 +90,22 @@ public class GameState {
                     Bukkit.broadcastMessage(Quake.prefix + "§eGame has started.§a Good luck!");
                 },
                 (t) -> {
+                    String timeLeftMsg = Quake.prefix + "§eGame starts in §a" + (int) t.getSecondsLeft() + "s";
+
                     beforeStart = t.getSecondsLeft();
-                    int half = (int) (map.getMaxPlayers(map.getName())) / 2;
+                    int half = map.getMaxPlayers(map.getName()) / 2;
 
                     if(map.getMaxPlayers(map.getName()) > 0) {
                         if(Bukkit.getOnlinePlayers().size() >= half &&
                                 !shrinkedTimer && t.getSecondsLeft() != 0) {
                             shrinkedTimer = true;
                             t.setSecondsLeft(beforeStart /= 2);
+                            Bukkit.broadcastMessage(timeLeftMsg);
                         }
                     }
 
                     if(t.getSecondsLeft() % 20 == 0 || t.getSecondsLeft() <= 10) {
-                        Bukkit.broadcastMessage(Quake.prefix + "§eGame starts in §a" + (int) t.getSecondsLeft() + "s");
+                        Bukkit.broadcastMessage(timeLeftMsg);
 
                         GameSound sound = GameSound.CLICK;
                         for(Player online : Bukkit.getOnlinePlayers())
@@ -111,30 +114,6 @@ public class GameState {
                 }
         );
         start.scheduleTimer();
-    }
-
-    public void startTimer() {
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                /**
-                 * If timer is greater than 0 and a player has reached enough kills to win.
-                 */
-                if(running && timer <= -1) {
-                    /**
-                     * If timer is lower than 0, then get the player that has the most kills.
-                     */
-                    if(winner == null) Bukkit.broadcastMessage(Quake.prefix + "§e§lTIME §r§aIS UP!");
-
-                    OfflinePlayer player = Bukkit.getOfflinePlayer(maximumKey(gameKills));
-                    winner = player;
-                    this.cancel();
-                }
-                if(running) timer--;
-
-            }
-        }.runTaskTimer(plugin, 20, 20);
     }
 
     public void stop() {
@@ -200,7 +179,7 @@ public class GameState {
             Bukkit.broadcastMessage(Quake.prefix + "§e§lGame ended. §cNot enough players!");
 
             running = false;
-            isStarting = false;
+            starting = false;
         }
 
         Countdown kickall = new Countdown(plugin,
@@ -222,13 +201,35 @@ public class GameState {
                     plugin.mapManager.chooseGameMap();
 
                     running = false;
-                    isStarting = false;
+                    starting = false;
                     winner = null;
                 },
                 (t) -> {}
         );
         kickall.scheduleTimer();
     }
+
+    public void startTimer() {
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                if(running && timer <= -1) {
+                    /**
+                     * If timer is lower than 0, then get the player that has the most kills.
+                     */
+                    if(winner == null) Bukkit.broadcastMessage(Quake.prefix + "§e§lTIME §r§aIS UP!");
+
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(maximumKey(gameKills));
+                    winner = player;
+                    this.cancel();
+                }
+                if(running) timer--;
+
+            }
+        }.runTaskTimer(plugin, 20, 20);
+    }
+
 
     public void startGameChecks() {
         Map map = plugin.gameMap;
@@ -237,8 +238,7 @@ public class GameState {
 
             @Override
             public void run() {
-
-                if(running && !isStarting) {
+                if(running && !starting) {
 
                     if(map != null) {
                         if(Bukkit.getOnlinePlayers().size() < 2) {
@@ -251,7 +251,7 @@ public class GameState {
                         stop();
                         this.cancel();
                     }
-                } else this.cancel();
+                }
             }
         }.runTaskTimer(plugin, 20, 20);
     }
@@ -267,7 +267,7 @@ public class GameState {
                 /**
                  * Cancels the timer if there aren't enough players waiting.
                  */
-                if(isStarting) {
+                if(starting) {
                     if(!plugin.gameMap.isEnough()) {
                         Bukkit.broadcastMessage(Quake.prefix + "§e§lStart cancelled. §r§cNot enough players!");
 
@@ -277,7 +277,7 @@ public class GameState {
                             title.sendSubTitle(online, "Cancelled", ChatColor.RED, 0, 75, 0);
                             online.playSound(online.getLocation(), sound.getSound(), 1.5f, sound.getPitch());
                         }
-                        isStarting = false;
+                        starting = false;
                         start.interrupt(true);
                         this.cancel();
                     }

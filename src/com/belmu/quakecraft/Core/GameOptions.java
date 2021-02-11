@@ -20,7 +20,7 @@ public class GameOptions {
 
     public static FireworkEffect fireworkEffect = FireworkEffect.builder().with(FireworkEffect.Type.BALL).withColor(Color.LIME).withColor(Color.YELLOW).withColor(Color.FUCHSIA).flicker(true).build();
     public static Railgun railgun = new Railgun(HoeType.IRON_HOE, "§dRailgun", 1.1D, 4.0D,
-            EnumParticle.FLAME, KillSound.ANVIL_LAND, fireworkEffect);
+            EnumParticle.FIREWORKS_SPARK, KillSound.BLAZE_DEATH, fireworkEffect);
 
     public static int railgunSlot = 0;
 

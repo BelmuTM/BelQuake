@@ -100,7 +100,7 @@ public class PlayerJoin implements Listener {
              * @Important starting the game state if the map has enough players.
              */
             if(enough) {
-                if(!game.running && !game.isStarting)
+                if(!game.running && !game.starting)
                     game.start(GameOptions.railgun, GameOptions.timeBeforeStart);
             }
         }
