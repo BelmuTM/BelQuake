@@ -3,6 +3,9 @@ package com.belmu.quakecraft.Commands;
 import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Core.Map.MapManager;
 import com.belmu.quakecraft.Core.Map.SpawnPoint;
+import com.belmu.quakecraft.Core.Powerup.Powerup;
+import com.belmu.quakecraft.Core.Powerup.PowerupManager;
+import com.belmu.quakecraft.Core.Powerup.PowerupType;
 import com.belmu.quakecraft.Quake;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,6 +41,7 @@ public class QuakeCmd implements CommandExecutor {
         if(sender instanceof Player) {
             Player player = (Player) sender;
             MapManager mm = plugin.mapManager;
+            PowerupManager pm = new PowerupManager(plugin);
             FileConfiguration cfg = mm.getConfig();
 
             if(cmd.getName().equalsIgnoreCase("quake")) {
@@ -249,6 +253,10 @@ public class QuakeCmd implements CommandExecutor {
                                         int kills = sortedKills.get(p.getUniqueId());
                                         format = "§b#" + n + " §7" + p.getName() + " §e- §a" + kills;
 
+                                        if(n == 1) format = "§6#§l" + n + " §r§6" + p.getName() + " §e- §a" + kills;
+                                        else if(n == 2) format = "§7#§l" + n + " §r§7" + p.getName() + " §e- §a" + kills;
+                                        else if(n == 3) format = "§c#§l" + n + " §r§c" + p.getName() + " §e- §a" + kills;
+
                                         if (kills <= 0) format = "§b#" + n + " §7" + p.getName() + " §e- " + na;
 
                                     } else {
@@ -276,6 +284,7 @@ public class QuakeCmd implements CommandExecutor {
     String endLine =   "§d§m                                                     ";
     String helpMessage =
             startLine + "\n"
+
             + "§a[-] §eMaps:" + "\n \n"
             + cmd + "§fmap add §7[name]" + "\n"
             + cmd + "§fmap remove §7[name]" + "\n"
@@ -283,14 +292,22 @@ public class QuakeCmd implements CommandExecutor {
             + cmd + "§fmap setminplayers §7[name] [amount]" + "\n"
             + cmd + "§fmap setmaxplayers §7[name] [amount]" + "\n"
             + cmd + "§fmap list" + "\n \n"
+
             + "§a[-] §eSpawn Points:" + "\n \n"
-            + cmd + "§fspawnpoint §7[name] §fadd" + "\n"
-            + cmd + "§fspawnpoint §7[name] §fremove §7[id]" + "\n"
-            + cmd + "§fspawnpoint §7[name] §fteleport §7[id]" + "\n"
-            + cmd + "§fspawnpoint §7[name] §fclear" + "\n"
-            + cmd + "§fspawnpoint §7[name] §flist" + "\n \n"
+            + cmd + "§fspawnpoint §7[mapName] §fadd" + "\n"
+            + cmd + "§fspawnpoint §7[mapName] §fremove §7[id]" + "\n"
+            + cmd + "§fspawnpoint §7[mapName] §fteleport §7[id]" + "\n"
+            + cmd + "§fspawnpoint §7[mapName] §fclear" + "\n"
+            + cmd + "§fspawnpoint §7[mapName] §flist" + "\n \n"
+
+            + "§a[-] §ePowerups:" + "\n \n"
+            + cmd + "§fpowerup §7[mapName] §fadd §7[type]" + "\n"
+            + cmd + "§fpowerup §7[mapName] §fremove §7[id]" + "\n"
+            + cmd + "§fpowerup §7[mapName] §flist" + "\n \n"
+
             + "§a[-] §eLeaderboard:" + "\n \n"
             + cmd + "§fleaderboard|lb" + "\n \n"
+
             + "§7More documentation at:\n"
             + "§b§nhttps://github.com/BelmuTM/" + "\n" + endLine;
 }

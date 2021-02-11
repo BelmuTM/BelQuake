@@ -4,6 +4,7 @@ import com.belmu.quakecraft.Commands.QuakeCmd;
 import com.belmu.quakecraft.Core.GameState;
 import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Core.Map.MapManager;
+import com.belmu.quakecraft.Core.Powerup.PowerupManager;
 import com.belmu.quakecraft.Core.Stats.StatsConfig;
 import com.belmu.quakecraft.Listeners.ListenersManager;
 import com.belmu.quakecraft.Utils.Properties;
@@ -64,6 +65,9 @@ public class Quake extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         gameMap = null;
+
+        PowerupManager pm = new PowerupManager(this);
+        pm.despawnPowerups();
     }
 
     /**

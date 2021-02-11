@@ -19,6 +19,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 /**
  * @author Belmu (https://github.com/BelmuTM/)
  */
@@ -46,7 +50,11 @@ public class PlayerJoin implements Listener {
         String playerCount = "§8(§7" + Bukkit.getOnlinePlayers().size() + "§8/§d" + maxPlayers + "§8)";
         String playerName;
 
+        LinkedHashMap<UUID, Integer> sortedKills = plugin.statsConfig.sortedKills();
+        Entry<UUID, Integer> entry = sortedKills.entrySet().iterator().next();
+
         if(player.isOp()) playerName = "§8[§c✦§8] §c" + player.getName();
+        else if(!sortedKills.isEmpty() && entry.getKey() == player.getUniqueId()) playerName = "§7[§6§l#1§r§7] §6" + player.getName();
         else playerName = "§7" + player.getName();
 
         player.setPlayerListName(playerName);
@@ -54,7 +62,7 @@ public class PlayerJoin implements Listener {
         e.setJoinMessage(Quake.prefix + playerName + " §fjoined the game " + playerCount);
 
         player.getInventory().clear();
-        if(player.hasPotionEffect(PotionEffectType.SPEED)) player.removePotionEffect(PotionEffectType.SPEED);
+        player.removePotionEffect(PotionEffectType.SPEED);
         if(player.getGameMode() != GameMode.ADVENTURE && !player.isOp()) player.setGameMode(GameMode.ADVENTURE);
         /**
          * Constantly sending packets to the player who joined.

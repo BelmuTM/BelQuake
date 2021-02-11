@@ -147,7 +147,7 @@ public class GameScoreboard {
         team = scoreboard.getTeam(teamName);
 
         team.setCanSeeFriendlyInvisibles(true);
-        team.setNameTagVisibility(NameTagVisibility.ALWAYS);
+        team.setNameTagVisibility(NameTagVisibility.HIDE_FOR_OTHER_TEAMS);
 
         for(Player online : Bukkit.getOnlinePlayers()) if(!team.getEntries().contains(online.getName())) team.addEntry(online.getName());
     }

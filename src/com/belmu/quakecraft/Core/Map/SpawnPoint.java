@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class SpawnPoint {
 
-    private static String path = "Maps.";
+    private String path = MapManager.path;
 
     private Map map;
     private String name;

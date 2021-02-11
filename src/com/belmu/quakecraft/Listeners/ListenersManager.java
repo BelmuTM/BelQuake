@@ -1,5 +1,6 @@
 package com.belmu.quakecraft.Listeners;
 
+import com.belmu.quakecraft.Core.Powerup.PowerupActivateEvent;
 import com.belmu.quakecraft.Core.Railgun.Dash.DashEvent;
 import com.belmu.quakecraft.Core.Railgun.Firing.ShootEvent;
 import com.belmu.quakecraft.Quake;
@@ -24,6 +25,7 @@ public class ListenersManager {
         reg(new PlayerChat());
         reg(new PlayerJoin(plugin));
         reg(new PlayerQuit(plugin));
+        reg(new PowerupActivateEvent(plugin));
 
         // Core Events
         reg(new ShootEvent(plugin));

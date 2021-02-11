@@ -8,6 +8,7 @@ import org.bukkit.Material;
 public enum PassableBlocks {
 
     AIR,
+    BARRIER,
     STAINED_GLASS,
     STAINED_GLASS_PANE,
     GLASS,
@@ -71,7 +72,9 @@ public enum PassableBlocks {
     WOOD_PLATE,
     STONE_PLATE,
     IRON_PLATE,
-    GOLD_PLATE;
+    GOLD_PLATE,
+    TRAP_DOOR,
+    BREWING_STAND;
 
     public static boolean isFence(Material material) {
         return material.toString().toLowerCase().contains("fence");

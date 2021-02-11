@@ -16,7 +16,8 @@ import java.util.Random;
  */
 public class MapManager {
 
-    private static String file_name = "maps.yml";
+    public static String path = "Maps.";
+    private String file_name = "maps.yml";
 
     public final Quake plugin;
     public MapManager(Quake plugin) {

@@ -4,15 +4,15 @@ import com.belmu.quakecraft.Core.Map.Map;
 import com.belmu.quakecraft.Core.Packets.Effects;
 import com.belmu.quakecraft.Core.Packets.Scoreboard.GameScoreboard;
 import com.belmu.quakecraft.Core.Packets.Title;
+import com.belmu.quakecraft.Core.Powerup.Powerup;
+import com.belmu.quakecraft.Core.Powerup.PowerupManager;
+import com.belmu.quakecraft.Core.Powerup.PowerupType;
 import com.belmu.quakecraft.Core.Railgun.Railgun;
 import com.belmu.quakecraft.Core.Stats.KillStreaks;
 import com.belmu.quakecraft.Core.Stats.StatsConfig;
 import com.belmu.quakecraft.Quake;
 import com.belmu.quakecraft.Utils.Countdown;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -71,7 +71,7 @@ public class GameState {
                     starting = false;
                     running = true;
 
-                    startTimer();
+                    spawnPowerups();
                     startGameChecks();
 
                     for(Player online : Bukkit.getOnlinePlayers()) {
@@ -85,9 +85,11 @@ public class GameState {
 
                         online.getInventory().setItem(GameOptions.railgunSlot, railgun.getItemStack());
                         online.getInventory().setHeldItemSlot(GameOptions.railgunSlot);
-                        online.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1, false, false));
+                        online.addPotionEffect(GameOptions.potionEffect);
                     }
                     Bukkit.broadcastMessage(Quake.prefix + "§eGame has started.§a Good luck!");
+                    winner = null;
+                    startTimer();
                 },
                 (t) -> {
                     String timeLeftMsg = Quake.prefix + "§eGame starts in §a" + (int) t.getSecondsLeft() + "s";
@@ -103,7 +105,6 @@ public class GameState {
                             Bukkit.broadcastMessage(timeLeftMsg);
                         }
                     }
-
                     if(t.getSecondsLeft() % 20 == 0 || t.getSecondsLeft() <= 10) {
                         Bukkit.broadcastMessage(timeLeftMsg);
 
@@ -118,6 +119,7 @@ public class GameState {
 
     public void stop() {
         StatsConfig config = plugin.statsConfig;
+        PowerupManager pm = new PowerupManager(plugin);
         Title title = new Title(plugin);
 
         for(Player online : Bukkit.getOnlinePlayers())
@@ -187,6 +189,8 @@ public class GameState {
 
                 () -> {
                     timer = 0;
+                    pm.despawnPowerups();
+                    pm.powerupTime.clear();
                 },
                 () -> {
                     gameKills.clear();
@@ -214,6 +218,8 @@ public class GameState {
 
             @Override
             public void run() {
+
+                //System.out.println(timer);
                 if(running && timer <= -1) {
                     /**
                      * If timer is lower than 0, then get the player that has the most kills.
@@ -241,13 +247,13 @@ public class GameState {
                 if(running && !starting) {
 
                     if(map != null) {
-                        if(Bukkit.getOnlinePlayers().size() < 2) {
+                        if(!map.isEnough() /*|| Bukkit.getOnlinePlayers().size() < 2*/) {
                             winner = null;
                             stop();
                             this.cancel();
                         }
                     }
-                    if(winner != null && gameKills.get(winner.getUniqueId()) >= GameOptions.toWin) {
+                    if(winner != null) {
                         stop();
                         this.cancel();
                     }
@@ -344,6 +350,24 @@ public class GameState {
             default:
                 return i + suffixes[i % 10];
 
+        }
+    }
+
+    public void spawnPowerups() {
+        PowerupManager pm = new PowerupManager(plugin);
+        Map map = plugin.gameMap;
+        World world = null;
+
+        if(map.getMainSpawn(map.getName()) != null) world = map.getMainSpawn(map.getName()).getWorld();
+
+        if(world != null) {
+            Location speedLocation = new Location(world, -25.5, 50, 0.5);
+            Powerup speed = new Powerup(map, speedLocation, PowerupType.SPEED, plugin);
+            pm.spawnPowerup(speed);
+
+            Location rapidFireLocation = new Location(world, 13.5, 44, -21.5);
+            Powerup rapidFire = new Powerup(map, rapidFireLocation, PowerupType.RAPID_FIRE, plugin);
+            pm.spawnPowerup(rapidFire);
         }
     }
 

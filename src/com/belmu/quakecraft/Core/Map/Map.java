@@ -19,7 +19,7 @@ import java.util.Random;
  */
 public class Map {
 
-    private String path = "Maps.";
+    private String path = MapManager.path;
     private String name;
 
     public final Quake plugin;
@@ -175,7 +175,7 @@ public class Map {
         sp.invulnerability(player, GameOptions.invulnerabilityTime);
     }
 
-    static int searchQuery = 6;
+    static int searchQuery = 10;
 
     public Location randomSpawnPoint() {
         Location spawn = null;

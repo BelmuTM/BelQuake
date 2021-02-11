@@ -2,6 +2,7 @@ package com.belmu.quakecraft.Core.Railgun;
 
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import org.bukkit.*;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,14 +20,14 @@ public class Railgun {
 
     private HoeType type;
     private String name;
-    private Double cooldown;
-    private Double cooldownDash;
+    private double cooldown;
+    private double cooldownDash;
 
     private EnumParticle effect;
     private KillSound killSound;
     private FireworkEffect fireworkEffect;
 
-    public Railgun(HoeType type, String name, Double cooldown, Double cooldownDash,
+    public Railgun(HoeType type, String name, double cooldown, double cooldownDash,
                    EnumParticle effect, KillSound killSound, FireworkEffect fireworkEffect) {
         this.type = type;
         this.name = name;
@@ -42,8 +43,8 @@ public class Railgun {
 
     public HoeType getType() { return type; }
     public String getName() { return name; }
-    public Double getCooldown() { return cooldown; }
-    public Double getCooldownDash() { return cooldownDash; }
+    public double getCooldown() { return cooldown; }
+    public double getCooldownDash() { return cooldownDash; }
 
     public EnumParticle getEffect() { return effect; }
     public KillSound getKillSound() { return killSound; }
@@ -89,5 +90,17 @@ public class Railgun {
             if(ChatColor.stripColor(railgun.getName()).equalsIgnoreCase(ChatColor.stripColor(name))) return true;
         }
         return false;
+    }
+
+    public static Railgun getPlayerRailgun(Player player) {
+
+        if(player.getInventory().getContents().length != 0) {
+
+            for (ItemStack item : player.getInventory().getContents()) {
+                for(Railgun railgun : railguns)
+                    if(item == railgun.getItemStack()) return railgun;
+            }
+        }
+        return null;
     }
 }

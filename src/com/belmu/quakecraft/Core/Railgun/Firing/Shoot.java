@@ -209,7 +209,7 @@ public class Shoot {
         double y = location.getY();
         double entityY = entity.getLocation().getY();
 
-        return y - entityY > 1.275d;
+        return y - entityY > 1.3325d;
     }
 
     public static boolean isValid(Entity entity, Player player) {
