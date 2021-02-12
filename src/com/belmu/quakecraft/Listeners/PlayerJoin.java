@@ -36,7 +36,6 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Map map = plugin.gameMap;
-        GameState game = plugin.gameState;
 
         GameScoreboard scoreboard = new GameScoreboard(plugin);
         TabList tabList = new TabList(plugin);
@@ -64,6 +63,24 @@ public class PlayerJoin implements Listener {
         player.getInventory().clear();
         player.removePotionEffect(PotionEffectType.SPEED);
         if(player.getGameMode() != GameMode.ADVENTURE && !player.isOp()) player.setGameMode(GameMode.ADVENTURE);
+
+        /**
+         * Teleports player to main spawn on join.
+         * Then checks if it can start a new game.
+         */
+        if(plugin.gameState == null) plugin.gameState = new GameState(plugin);
+
+        if(map != null) {
+
+            Location mainSpawn = map.getMainSpawn(map.getName());
+            if(mainSpawn != null) {
+                player.teleport(mainSpawn);
+
+                setMapTime(map);
+            }
+            checkGame(map, plugin.gameState);
+        }
+
         /**
          * Constantly sending packets to the player who joined.
          * Refreshing both the tablist and the scoreboard.
@@ -81,22 +98,6 @@ public class PlayerJoin implements Listener {
                 scoreboard.update(player);
             }
         }.runTaskTimer(plugin, 17, 17);
-
-        /**
-         * Teleports player to main spawn on join.
-         * Then checks if it can start a new game.
-         */
-
-        if(map != null) {
-
-            Location mainSpawn = map.getMainSpawn(map.getName());
-            if(mainSpawn != null) {
-                player.teleport(mainSpawn);
-
-                setMapTime(map);
-            }
-            checkGame(map, game);
-        }
         scoreboard.addToTeams(player, player.getName());
     }
 

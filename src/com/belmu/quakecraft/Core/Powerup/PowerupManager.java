@@ -52,7 +52,10 @@ public class PowerupManager {
 
             @Override
             public void run() {
-                if(!powerups.contains(powerup)) this.cancel();
+                if(!powerups.contains(powerup)) {
+                    item.remove();
+                    this.cancel();
+                }
 
                 Effects effects = new Effects(plugin);
                 effects.sendParticle(powerup.getParticle(), particlesLocation, 0, 0, 0, 0.0485f, 5);

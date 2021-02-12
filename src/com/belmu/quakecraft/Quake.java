@@ -67,7 +67,6 @@ public class Quake extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         gameMap = null;
-        powerupManager.despawnPowerups();
     }
 
     /**

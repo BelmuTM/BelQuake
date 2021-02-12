@@ -45,6 +45,7 @@ public class GameState {
 
     public boolean starting;
     public boolean running;
+    public boolean ended;
 
     private Countdown start;
 
@@ -56,6 +57,8 @@ public class GameState {
                 time,
 
                 () -> {
+                    plugin.powerupManager.despawnPowerups();
+
                     gameKills.clear();
                     winner = null;
                     timer = GameOptions.timer;
@@ -64,6 +67,7 @@ public class GameState {
 
                     starting = true;
                     running = false;
+                    ended = false;
 
                     startCancelledCheck();
                 },
@@ -191,6 +195,8 @@ public class GameState {
                     timer = 0;
                     pm.despawnPowerups();
                     pm.powerupTime.clear();
+
+                    ended = true;
                 },
                 () -> {
                     gameKills.clear();
@@ -206,7 +212,9 @@ public class GameState {
 
                     running = false;
                     starting = false;
+                    ended = false;
                     winner = null;
+                    plugin.gameState = new GameState(plugin);
                 },
                 (t) -> {}
         );
@@ -224,10 +232,13 @@ public class GameState {
                     /**
                      * If timer is lower than 0, then get the player that has the most kills.
                      */
-                    if(winner == null) Bukkit.broadcastMessage(Quake.prefix + "§e§lTIME §r§aIS UP!");
-
                     OfflinePlayer player = Bukkit.getOfflinePlayer(maximumKey(gameKills));
                     winner = player;
+
+                    if(winner == null) {
+                        Bukkit.broadcastMessage(Quake.prefix + "§e§lTIME §r§aIS UP!");
+                        plugin.gameState = new GameState(plugin);
+                    }
                     this.cancel();
                 }
                 if(running) timer--;
@@ -284,6 +295,7 @@ public class GameState {
                         }
                         starting = false;
                         start.interrupt(true);
+                        plugin.gameState = new GameState(plugin);
                         this.cancel();
                     }
                 } else this.cancel();

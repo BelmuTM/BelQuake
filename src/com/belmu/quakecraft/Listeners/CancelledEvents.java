@@ -41,9 +41,9 @@ public class CancelledEvents implements Listener {
         if(map != null) {
             if(game != null) {
 
-                if (map.isFull())
+                if(map.isFull())
                     e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§cGame is full. §bSorry!\n" + "§7§m                                ");
-                if (game.running)
+                if(game.running || game.ended)
                     e.disallow(PlayerLoginEvent.Result.KICK_FULL, "§7§m                                " + "\n§dGame has §astarted§d. §bSorry!\n" + "§7§m                                ");
             }
         }

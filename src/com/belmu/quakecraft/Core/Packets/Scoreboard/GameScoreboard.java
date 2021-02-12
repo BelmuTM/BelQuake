@@ -60,7 +60,6 @@ public class GameScoreboard {
             mapName = map.getName();
             maxPlayers = map.getMaxPlayers(map.getName());
         }
-
         if(maxPlayers == 0) maxPlayers = Bukkit.getMaxPlayers();
 
         for (Map.Entry<Player, BPlayerBoard> scoreBoard : scoreBoards.entrySet()) {

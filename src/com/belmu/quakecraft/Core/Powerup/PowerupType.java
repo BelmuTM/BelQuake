@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public enum PowerupType {
 
-    SPEED(EnumParticle.FIREWORKS_SPARK, Material.FEATHER, 60),
+    SPEED(EnumParticle.FIREWORKS_SPARK, Material.FEATHER, 50),
     RAPID_FIRE(EnumParticle.FLAME, Material.BLAZE_POWDER, 5.5);
 
     private EnumParticle particle;
@@ -26,5 +26,4 @@ public enum PowerupType {
     public EnumParticle getParticle() { return particle; }
     public Material getMaterial() { return material; }
     public double getTime() { return time; }
-
 }
