@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class PowerupManager {
 
-    public int respawnTime = 1 * 60;
+    public int respawnTime = 75;
 
     public final Quake plugin;
     public PowerupManager(Quake plugin) {
@@ -43,6 +43,7 @@ public class PowerupManager {
         Item item = world.dropItem(itemLocation, new ItemStack(powerup.getMaterial()));
         item.setPickupDelay(Integer.MAX_VALUE);
         item.setVelocity(new Vector(0, 0, 0));
+        powerupsItems.put(powerup, item);
 
         if(!powerups.contains(powerup)) powerups.add(powerup);
 
@@ -60,17 +61,20 @@ public class PowerupManager {
     }
 
     public void despawnPowerup(Powerup powerup) {
+        if(powerupsItems.containsKey(powerup)) {
+            Item item = powerupsItems.get(powerup);
+            item.remove();
+        }
         powerups.remove(powerup);
-        powerupsItems.get(powerup).remove();
     }
 
     public void despawnPowerups() {
-
         if(!powerupsItems.isEmpty()) for(Item item : powerupsItems.values()) item.remove();
+
         if(!powerups.isEmpty()) {
-            for (Powerup powerup : powerups) {
-                powerups.remove(powerup);
+            for(Powerup powerup : powerups) {
                 powerupsItems.remove(powerup);
+                powerups.remove(powerup);
             }
         }
     }
@@ -79,34 +83,37 @@ public class PowerupManager {
     public void activatePowerup(Powerup powerup, Player player) {
         String powerupName = powerup.getPowerupType().toString().replaceAll("_", " ");
 
-        Countdown respawn = new Countdown(plugin,
-                70,
+        if(!powerupTime.containsKey(player.getUniqueId())) {
+            Countdown respawn = new Countdown(plugin,
+                    respawnTime,
 
-                () -> {
-                    Bukkit.broadcastMessage(Quake.prefix + "§e" + player.getName() + " §ahas activated §6§l" + powerupName + "§r§a!");
+                    () -> {
+                        Bukkit.broadcastMessage(Quake.prefix + "§e" + player.getName() + " §ahas activated §6§l" + powerupName);
+                        powerupTime.put(player.getUniqueId(), powerup.getTime());
 
-                    Countdown powTime = new Countdown(plugin,
-                            powerup.getTime(),
+                        Countdown powTime = new Countdown(plugin,
+                                powerup.getTime(),
 
-                            () -> {
-                                powerupTime.put(player.getUniqueId(), powerup.getTime()); },
-                            () -> {
-                                powerupTime.remove(player.getUniqueId()); },
-                            (t) -> {}
-                    );
-                    powTime.scheduleTimer();
+                                () -> {},
+                                () -> {
+                                    powerupTime.remove(player.getUniqueId());
+                                },
+                                (t) -> {
+                                }
+                        );
+                        powTime.scheduleTimer();
 
-                    despawnPowerup(powerup);
-                    effect(powerup, player);
-                },
-                () -> {
-
-                    spawnPowerup(powerup);
-                },
-                (t) -> {
-                }
-        );
-        respawn.scheduleTimer();
+                        effect(powerup, player);
+                        despawnPowerup(powerup);
+                    },
+                    () -> {
+                        spawnPowerup(powerup);
+                    },
+                    (t) -> {
+                    }
+            );
+            respawn.scheduleTimer();
+        }
     }
 
     public void effect(Powerup powerup, Player player) {
@@ -124,12 +131,12 @@ public class PowerupManager {
 
                     if(railgun == null || railgun.getItemStack() == null) return;
 
-                    if(player.getItemInHand() == railgun.getItemStack()) {
+                    if(Railgun.isSimilar(player.getItemInHand(), railgun.getItemStack())) {
                         Shoot shoot = new Shoot(plugin);
                         shoot.shootRailgun(player, railgun);
                     }
                 }
-            }.runTaskTimer(plugin, 12, 12);
+            }.runTaskTimer(plugin, 0, 8);
         }
 
         else if(type == PowerupType.SPEED) {
@@ -138,14 +145,13 @@ public class PowerupManager {
 
                     () -> {
                         player.removePotionEffect(PotionEffectType.SPEED);
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, (int) (powerup.getTime() * 20), 2, false, false));
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, (int) (powerup.getTime() * 20), 3, false, false));
                     },
                     () -> {
                         player.removePotionEffect(PotionEffectType.SPEED);
                         player.addPotionEffect(GameOptions.potionEffect);
                     },
-                    (t) -> {
-                    }
+                    (t) -> {}
             );
             speed.scheduleTimer();
         }

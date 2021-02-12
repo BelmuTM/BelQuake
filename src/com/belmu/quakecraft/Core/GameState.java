@@ -119,7 +119,7 @@ public class GameState {
 
     public void stop() {
         StatsConfig config = plugin.statsConfig;
-        PowerupManager pm = new PowerupManager(plugin);
+        PowerupManager pm = plugin.powerupManager;
         Title title = new Title(plugin);
 
         for(Player online : Bukkit.getOnlinePlayers())
@@ -236,7 +236,6 @@ public class GameState {
         }.runTaskTimer(plugin, 20, 20);
     }
 
-
     public void startGameChecks() {
         Map map = plugin.gameMap;
 
@@ -247,7 +246,7 @@ public class GameState {
                 if(running && !starting) {
 
                     if(map != null) {
-                        if(!map.isEnough() /*|| Bukkit.getOnlinePlayers().size() < 2*/) {
+                        if(!map.isEnough() || Bukkit.getOnlinePlayers().size() < 2) {
                             winner = null;
                             stop();
                             this.cancel();
@@ -354,7 +353,7 @@ public class GameState {
     }
 
     public void spawnPowerups() {
-        PowerupManager pm = new PowerupManager(plugin);
+        PowerupManager pm = plugin.powerupManager;
         Map map = plugin.gameMap;
         World world = null;
 

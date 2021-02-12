@@ -13,13 +13,10 @@ import com.belmu.quakecraft.Core.Stats.StatsConfig;
 import com.belmu.quakecraft.Core.Stats.StreaksMessages;
 import com.belmu.quakecraft.Quake;
 import net.minecraft.server.v1_8_R3.AxisAlignedBB;
-import net.minecraft.server.v1_8_R3.BlockStep;
-import net.minecraft.server.v1_8_R3.BlockStepAbstract;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.*;
-import org.bukkit.material.Step;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -79,8 +76,7 @@ public class Shoot {
                     if(isValid(entity, player)) {
                         Location entityLoc = entity.getLocation();
 
-                        if(entityLoc.distance(location) <= 1.5) {
-
+                        if(entityLoc.distanceSquared(location) <= 1.5) {
                             if(entity == entitiesInSight.get(entitiesInSight.size() - 1)) {
                                 destination = location;
                                 break;

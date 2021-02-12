@@ -33,6 +33,7 @@ public class Quake extends JavaPlugin implements Listener {
     public static String prefix = "§8[§dQuake§8] » §7";
 
     public MapManager mapManager;
+    public PowerupManager powerupManager;
     public int mapTime;
     public StatsConfig statsConfig;
 
@@ -44,8 +45,9 @@ public class Quake extends JavaPlugin implements Listener {
 
         Bukkit.getPluginManager().registerEvents(this, this);
         mapManager = new MapManager(this);
-        statsConfig = new StatsConfig(this);
         gameState = new GameState(this);
+        powerupManager = new PowerupManager(this);
+        statsConfig = new StatsConfig(this);
 
         ListenersManager lm = new ListenersManager(this);
         lm.registerListeners();
@@ -65,9 +67,7 @@ public class Quake extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         gameMap = null;
-
-        PowerupManager pm = new PowerupManager(this);
-        pm.despawnPowerups();
+        powerupManager.despawnPowerups();
     }
 
     /**

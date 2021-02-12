@@ -94,13 +94,31 @@ public class Railgun {
 
     public static Railgun getPlayerRailgun(Player player) {
 
-        if(player.getInventory().getContents().length != 0) {
-
-            for (ItemStack item : player.getInventory().getContents()) {
-                for(Railgun railgun : railguns)
-                    if(item == railgun.getItemStack()) return railgun;
-            }
+        for(ItemStack item : player.getInventory().getContents()) {
+            for(Railgun railgun : railguns)
+                if(isSimilar(item, railgun.getItemStack())) return railgun;
         }
         return null;
     }
+
+    /* I DID NOT MAKE THIS METHOD. (https://www.spigotmc.org/threads/comparing-item-stacks.247785/?__cf_chl_jschl_tk__=75f635299a7776408f7fae334436d85c2225627f-1613118799-0-ATNvHeX2yMu5zCvw6yRHRWIjfR2_hSjo1uK3zSyV2s9VqZSqq6qPueKl3ElRjzJSUNjTmNDZ6b9GPc6UsCTOQAspM2fIem31SP6052PwdHHrQEFX2CZG-afri6v8himaErHY3FkXvt2U_8vnRx5FWHjkh9spel2SLX6Wwg04VL0th43TLExW_fnVlqht_DdMmttL5MTbj04vWGdOuUytDkKTV7feE0ptvjGqbZXt5zh3VzJ-t4bVnC59-e8uzljCyEEpBTYneOnIlPHE6-a7KraWcJOsoJTN_73FUoc10FBA2xXT6trpWFZBXVCda3A7fzH2cnX681jQD3ZBNTzzKq1bp7qx6dEyLbFRCifH70OJ)
+     * I modified it.
+     */
+    public static boolean isSimilar(ItemStack first,ItemStack second){
+        boolean similar = false;
+
+        if(first == null || second == null)
+            return similar;
+
+        boolean sameHasItemMeta = (first.hasItemMeta() == second.hasItemMeta());
+        boolean sameItemMeta = true;
+
+        if(sameHasItemMeta)
+            sameItemMeta = Bukkit.getItemFactory().equals(first.getItemMeta(), second.getItemMeta());
+
+        if(sameHasItemMeta && sameItemMeta) similar = true;
+
+        return similar;
+    }
+
 }

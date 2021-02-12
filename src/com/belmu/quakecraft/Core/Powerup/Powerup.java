@@ -21,8 +21,7 @@ public class Powerup {
 
         this.powerupType = powerupType;
 
-        PowerupManager powerupManager = new PowerupManager(plugin);
-        powerupManager.powerups.add(this);
+        plugin.powerupManager.powerups.add(this);
     }
 
     public Map getMap() { return map; }

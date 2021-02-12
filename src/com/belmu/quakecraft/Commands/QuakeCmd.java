@@ -41,7 +41,6 @@ public class QuakeCmd implements CommandExecutor {
         if(sender instanceof Player) {
             Player player = (Player) sender;
             MapManager mm = plugin.mapManager;
-            PowerupManager pm = new PowerupManager(plugin);
             FileConfiguration cfg = mm.getConfig();
 
             if(cmd.getName().equalsIgnoreCase("quake")) {
@@ -299,11 +298,6 @@ public class QuakeCmd implements CommandExecutor {
             + cmd + "§fspawnpoint §7[mapName] §fteleport §7[id]" + "\n"
             + cmd + "§fspawnpoint §7[mapName] §fclear" + "\n"
             + cmd + "§fspawnpoint §7[mapName] §flist" + "\n \n"
-
-            + "§a[-] §ePowerups:" + "\n \n"
-            + cmd + "§fpowerup §7[mapName] §fadd §7[type]" + "\n"
-            + cmd + "§fpowerup §7[mapName] §fremove §7[id]" + "\n"
-            + cmd + "§fpowerup §7[mapName] §flist" + "\n \n"
 
             + "§a[-] §eLeaderboard:" + "\n \n"
             + cmd + "§fleaderboard|lb" + "\n \n"

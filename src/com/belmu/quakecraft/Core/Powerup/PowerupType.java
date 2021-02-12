@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public enum PowerupType {
 
     SPEED(EnumParticle.FIREWORKS_SPARK, Material.FEATHER, 60),
-    RAPID_FIRE(EnumParticle.FLAME, Material.DIAMOND_HOE, 5.5);
+    RAPID_FIRE(EnumParticle.FLAME, Material.BLAZE_POWDER, 5.5);
 
     private EnumParticle particle;
     private Material material;
